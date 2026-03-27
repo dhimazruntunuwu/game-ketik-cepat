@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Typer Web</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; padding-top: 50px; }
+        #word { font-size: 3rem; color: #333; margin: 20px; }
+        input { font-size: 1.5rem; padding: 10px; border-radius: 8px; border: 2px solid #ddd; }
+        #score { font-size: 1.2rem; color: #666; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Game Ketik Cepat</h1>
+    <div id="word">Memuat...</div>
+    <input type="text" id="input" autofocus placeholder="Ketik di sini...">
+    <div id="score">Skor: 0 | Waktu: 30s</div>
+
+    <script>
+        const words = ['kotlin', 'android', 'compose', 'programming', 'developer', 'logic', 'interface', 'async'];
+        let currentWord, score = 0, timeLeft = 30;
+        
+        const wordDisplay = document.getElementById('word');
+        const inputField = document.getElementById('input');
+        const scoreDisplay = document.getElementById('score');
+
+        function nextWord() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            wordDisplay.innerText = currentWord;
+        }
+
+        inputField.addEventListener('input', () => {
+            if (inputField.value.toLowerCase() === currentWord) {
+                score++;
+                inputField.value = '';
+                nextWord();
+                updateDisplay();
+            }
+        });
+
+        function updateDisplay() {
+            scoreDisplay.innerText = `Skor: ${score} | Waktu: ${timeLeft}s`;
+        }
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            updateDisplay();
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                alert(`Waktu Habis! Skor Akhir: ${score}`);
+                location.reload();
+            }
+        }, 1000);
+
+        nextWord();
+    </script>
+</body>
+</html>
