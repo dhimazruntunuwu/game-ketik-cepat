@@ -1,58 +1,63 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Quick Typer Web</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; background: #f4f4f4; padding-top: 50px; }
-        #word { font-size: 3rem; color: #333; margin: 20px; }
-        input { font-size: 1.5rem; padding: 10px; border-radius: 8px; border: 2px solid #ddd; }
-        #score { font-size: 1.2rem; color: #666; margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <h1>Game Ketik Cepat</h1>
-    <div id="word">Memuat...</div>
-    <input type="text" id="input" autofocus placeholder="Ketik di sini...">
-    <div id="score">Skor: 0 | Waktu: 30s</div>
+<script>
+    // Daftar paragraf/cerita pendek
+    const stories = [
+        "Kotlin is a modern programming language that makes developers happier.",
+        "Android Studio is the official IDE for Android app development based on IntelliJ IDEA.",
+        "Jetpack Compose is a modern toolkit for building native UI on Android platforms.",
+        "The quick brown fox jumps over the lazy dog in the middle of the night.",
+        "Coding is not just about writing lines of code but solving complex problems."
+    ];
 
-    <script>
-        const words = ['kotlin', 'android', 'compose', 'programming', 'developer', 'logic', 'interface', 'async'];
-        let currentWord, score = 0, timeLeft = 30;
+    let currentStory = "", score = 0, timeLeft = 60; // Waktu saya tambah jadi 60 detik
+    
+    const wordDisplay = document.getElementById('word');
+    const inputField = document.getElementById('input');
+    const scoreDisplay = document.getElementById('score');
+
+    // Mengatur tampilan font agar lebih rapi untuk paragraf
+    wordDisplay.style.fontSize = "1.5rem";
+    wordDisplay.style.lineHeight = "1.6";
+    wordDisplay.style.maxWidth = "600px";
+    wordDisplay.style.margin = "20px auto";
+    inputField.style.width = "80%";
+
+    function nextStory() {
+        currentStory = stories[Math.floor(Math.random() * stories.length)];
+        wordDisplay.innerText = currentStory;
+        inputField.value = ''; // Kosongkan input setiap ganti cerita
+    }
+
+    inputField.addEventListener('input', () => {
+        const val = inputField.value;
         
-        const wordDisplay = document.getElementById('word');
-        const inputField = document.getElementById('input');
-        const scoreDisplay = document.getElementById('score');
-
-        function nextWord() {
-            currentWord = words[Math.floor(Math.random() * words.length)];
-            wordDisplay.innerText = currentWord;
-        }
-
-        inputField.addEventListener('input', () => {
-            if (inputField.value.toLowerCase() === currentWord) {
-                score++;
-                inputField.value = '';
-                nextWord();
-                updateDisplay();
-            }
-        });
-
-        function updateDisplay() {
-            scoreDisplay.innerText = `Skor: ${score} | Waktu: ${timeLeft}s`;
-        }
-
-        const timer = setInterval(() => {
-            timeLeft--;
+        // Cek apakah yang diketik sudah sama persis dengan kalimat target
+        if (val === currentStory) {
+            score += currentStory.split(' ').length; // Skor berdasarkan jumlah kata
+            nextStory();
             updateDisplay();
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                alert(`Waktu Habis! Skor Akhir: ${score}`);
-                location.reload();
-            }
-        }, 1000);
+        }
+        
+        // Fitur tambahan: Warnai teks jadi merah jika salah ketik tengah jalan
+        if (currentStory.startsWith(val)) {
+            inputField.style.borderColor = "#ddd";
+        } else {
+            inputField.style.borderColor = "red";
+        }
+    });
 
-        nextWord();
-    </script>
-</body>
-</html>
+    function updateDisplay() {
+        scoreDisplay.innerText = `Total Kata: ${score} | Waktu: ${timeLeft}s`;
+    }
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        updateDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            alert(`Waktu Habis! Kamu berhasil mengetik ${score} kata.`);
+            location.reload();
+        }
+    }, 1000);
+
+    nextStory();
+</script>
