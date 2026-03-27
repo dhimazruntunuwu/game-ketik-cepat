@@ -1,4 +1,4 @@
-// Daftar Game (Total 13 Game)
+// Daftar Game (Total 14 Game)
 const games = [
     { id: 'typing', name: 'Ketik Cepat', icon: '⌨️' },
     { id: 'snake', name: 'Snake Klasik', icon: '🐍' },
@@ -12,13 +12,13 @@ const games = [
     { id: 'color', name: 'Color Match', icon: '🎨' },
     { id: 'math_sub', name: 'Kurang-Kurangan', icon: '➖' },
     { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️' },
-    { id: 'math_div', name: 'Bagi-Bagian', icon: '➗' }
+    { id: 'math_div', name: 'Bagi-Bagian', icon: '➗' },
+    { id: 'drawing', name: 'Menggambar', icon: '🎨' }
 ];
 
-let timeLeft = 60; // Timer dalam detik
+let timeLeft = 60;
 let timerInterval;
 
-// Inisialisasi Menu Grid
 function initMenu() {
     const grid = document.getElementById('menu-grid');
     if(!grid) return;
@@ -30,39 +30,41 @@ function initMenu() {
     `).join('');
 }
 
-// Fungsi Countdown Global
 function startCountdown() {
     const stats = document.getElementById('game-stats');
-    timeLeft = 60; // Reset ke 1 menit setiap game mulai
-    
-    // Bersihkan interval lama jika ada (mencegah timer double)
+    timeLeft = 60; 
     clearInterval(timerInterval);
     
     timerInterval = setInterval(() => {
         timeLeft--;
-        
-        // Update tampilan skor dan waktu
-        // Kita ambil bagian skor saja jika stats.innerText sudah ada isinya
         let currentScore = stats.innerText.split('|')[0] || "Skor: 0";
         stats.innerText = `${currentScore} | ⏳ ${timeLeft}s`;
 
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             alert("Waktu Habis! Game Selesai.");
-            goHome(); // Kembali ke menu utama
+            goHome();
         }
     }, 1000);
 }
 
-// Fungsi untuk Menjalankan Game berdasarkan ID
 function launchGame(id) {
     document.getElementById('main-menu').classList.add('hidden');
     document.getElementById('game-area').classList.remove('hidden');
     
-    // Jalankan timer setiap kali game dipilih
-    startCountdown();
+    const stats = document.getElementById('game-stats');
 
-    // Switch Case untuk memanggil fungsi dari file di folder games/
+    // LOGIKA KHUSUS TIMER
+    if (id === 'drawing') {
+        clearInterval(timerInterval); // Hentikan timer jika ada sisa
+        stats.innerText = "Mode Bebas Menggambar 🎨";
+    } else {
+        startCountdown(); // Jalankan timer untuk game lainnya
+    }
+
+    // Pembersihan wrapper sebelum game baru dimulai
+    document.getElementById('game-canvas-wrapper').innerHTML = '';
+
     switch(id) {
         case 'typing': startTypingGame(); break;
         case 'snake': startSnakeGame(); break;
@@ -77,13 +79,13 @@ function launchGame(id) {
         case 'math_sub': startSubtractionGame(); break;
         case 'math_mul': startMultiplicationGame(); break;
         case 'math_div': startDivisionGame(); break;
+        case 'drawing': startDrawingGame(); break;
         default: console.error("Fungsi game tidak ditemukan!");
     }
 }
 
-// Fungsi Kembali ke Menu Utama
 function goHome() {
-    clearInterval(timerInterval); // Hentikan timer agar tidak jalan di background
+    clearInterval(timerInterval);
     location.reload(); 
 }
 
