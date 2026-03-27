@@ -1,63 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhimaz Game Hub</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
+        
+        /* Layout Grid Utama */
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 40px; }
+        
+        .game-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+        }
+
+        /* Card Game */
+        .game-card { 
+            background: var(--card-bg); 
+            border-radius: 15px; 
+            padding: 20px; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        .game-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .game-card h3 { margin: 10px 0; color: var(--primary); }
+        .game-card p { font-size: 0.9rem; color: #666; }
+
+        /* Tampilan Game (Hidden by Default) */
+        #game-area { display: none; background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .back-btn { background: #64748b; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+        
+        /* Typing Game Styles */
+        #word-display { font-size: 1.4rem; line-height: 1.6; margin: 20px auto; max-width: 700px; min-height: 80px; }
+        #typing-input { width: 90%; font-size: 1.2rem; padding: 12px; border-radius: 10px; border: 2px solid #cbd5e1; outline: none; }
+        #typing-input:focus { border-color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="main-menu">
+        <header>
+            <h1>🎮 Dhimaz Game Hub</h1>
+            <p>Pilih game untuk mulai bermain</p>
+        </header>
+
+        <div class="game-grid">
+            <div class="game-card" onclick="launchGame('typing')">
+                <div style="font-size: 3rem;">⌨️</div>
+                <h3>Ketik Cepat</h3>
+                <p>Uji kecepatan mengetikmu dengan paragraf teknis.</p>
+            </div>
+            
+            <div class="game-card" style="opacity: 0.6; cursor: not-allowed;">
+                <div style="font-size: 3rem;">🧩</div>
+                <h3>Puzzle (Segera)</h3>
+                <p>Game puzzle sedang dalam pengembangan.</p>
+            </div>
+
+            <div class="game-card" style="opacity: 0.6; cursor: not-allowed;">
+                <div style="font-size: 3rem;">🚀</div>
+                <h3>Space Shooter (Segera)</h3>
+                <p>Coming soon untuk Android Dev!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-area">
+        <button class="back-btn" onclick="goHome()">⬅ Kembali ke Menu</button>
+        <div id="game-content">
+            <h2 id="game-title">Nama Game</h2>
+            <div id="word-display">Memuat teks...</div>
+            <input type="text" id="typing-input" autofocus placeholder="Mulai mengetik di sini...">
+            <div id="stat-display" style="margin-top: 20px; font-weight: bold; color: #64748b;">
+                Skor: 0 | Waktu: 60s
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // Daftar paragraf/cerita pendek
+    const mainMenu = document.getElementById('main-menu');
+    const gameArea = document.getElementById('game-area');
+    const wordDisplay = document.getElementById('word-display');
+    const inputField = document.getElementById('typing-input');
+    const statDisplay = document.getElementById('stat-display');
+
     const stories = [
         "Kotlin is a modern programming language that makes developers happier.",
         "Android Studio is the official IDE for Android app development based on IntelliJ IDEA.",
         "Jetpack Compose is a modern toolkit for building native UI on Android platforms.",
-        "The quick brown fox jumps over the lazy dog in the middle of the night.",
         "Coding is not just about writing lines of code but solving complex problems."
     ];
 
-    let currentStory = "", score = 0, timeLeft = 60; // Waktu saya tambah jadi 60 detik
-    
-    const wordDisplay = document.getElementById('word');
-    const inputField = document.getElementById('input');
-    const scoreDisplay = document.getElementById('score');
+    let currentStory = "", score = 0, timeLeft = 60, timerInterval;
 
-    // Mengatur tampilan font agar lebih rapi untuk paragraf
-    wordDisplay.style.fontSize = "1.5rem";
-    wordDisplay.style.lineHeight = "1.6";
-    wordDisplay.style.maxWidth = "600px";
-    wordDisplay.style.margin = "20px auto";
-    inputField.style.width = "80%";
+    function launchGame(gameType) {
+        mainMenu.style.display = 'none';
+        gameArea.style.display = 'block';
+        
+        if (gameType === 'typing') {
+            startTypingGame();
+        }
+    }
+
+    function goHome() {
+        clearInterval(timerInterval);
+        gameArea.style.display = 'none';
+        mainMenu.style.display = 'block';
+        inputField.value = '';
+    }
+
+    function startTypingGame() {
+        document.getElementById('game-title').innerText = "Game Ketik Cepat";
+        score = 0;
+        timeLeft = 60;
+        nextStory();
+        updateStats();
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateStats();
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert(`Waktu Habis! Total kata: ${score}`);
+                goHome();
+            }
+        }, 1000);
+    }
 
     function nextStory() {
         currentStory = stories[Math.floor(Math.random() * stories.length)];
         wordDisplay.innerText = currentStory;
-        inputField.value = ''; // Kosongkan input setiap ganti cerita
+        inputField.value = '';
     }
 
     inputField.addEventListener('input', () => {
         const val = inputField.value;
-        
-        // Cek apakah yang diketik sudah sama persis dengan kalimat target
         if (val === currentStory) {
-            score += currentStory.split(' ').length; // Skor berdasarkan jumlah kata
+            score += currentStory.split(' ').length;
             nextStory();
-            updateDisplay();
+            updateStats();
         }
-        
-        // Fitur tambahan: Warnai teks jadi merah jika salah ketik tengah jalan
-        if (currentStory.startsWith(val)) {
-            inputField.style.borderColor = "#ddd";
-        } else {
-            inputField.style.borderColor = "red";
-        }
+        inputField.style.borderColor = currentStory.startsWith(val) ? "#cbd5e1" : "#ef4444";
     });
 
-    function updateDisplay() {
-        scoreDisplay.innerText = `Total Kata: ${score} | Waktu: ${timeLeft}s`;
+    function updateStats() {
+        statDisplay.innerText = `Skor: ${score} | Waktu: ${timeLeft}s`;
     }
-
-    const timer = setInterval(() => {
-        timeLeft--;
-        updateDisplay();
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            alert(`Waktu Habis! Kamu berhasil mengetik ${score} kata.`);
-            location.reload();
-        }
-    }, 1000);
-
-    nextStory();
 </script>
+
+</body>
+</html>
