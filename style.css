@@ -1,0 +1,202 @@
+/* Dhimaz Game Hub - UI/UX Stylesheet
+   Optimasi: Desktop Hover + Mobile Responsive Active 
+*/
+
+:root { 
+    --prm: #2563eb;       /* Biru Utama */
+    --prm-light: #dbeafe; /* Biru Muda */
+    --bg: #f8fafc;        /* Background Dasar */
+    --white: #ffffff; 
+    --slate: #64748b;     /* Warna Teks Sekunder */
+    --slate-dark: #1e293b;/* Warna Teks Utama */
+    --danger: #ef4444; 
+    --success: #22c55e;
+}
+
+/* Reset & Anti-Zoom */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body { 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    background: var(--bg); 
+    margin: 0; 
+    padding: 15px; 
+    overflow-x: hidden;
+    color: var(--slate-dark);
+}
+
+.hidden { display: none !important; }
+
+.container { 
+    max-width: 1000px; 
+    margin: 0 auto; 
+}
+
+/* Header Section */
+header { 
+    text-align: center; 
+    margin-top: 10px;
+    margin-bottom: 30px; 
+}
+
+header h1 { 
+    font-size: 2rem; 
+    color: var(--slate-dark); 
+    margin: 0;
+    letter-spacing: -1px;
+}
+
+/* --- MENU GRID --- */
+.game-grid { 
+    display: grid; 
+    /* Default HP: 2 Kolom (Biar pas di Xiaomi 12T) */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px; 
+}
+
+/* Responsive Grid untuk Tablet/Laptop */
+@media (min-width: 768px) {
+    .game-grid { 
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    }
+}
+
+/* --- GAME CARD --- */
+.game-card { 
+    background: var(--white); 
+    padding: 25px 15px; 
+    border-radius: 24px; 
+    text-align: center; 
+    cursor: pointer; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi Halus */
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border: 2px solid transparent;
+    position: relative;
+}
+
+/* EFEK HOVER (Laptop Style - Sesuai Keinginanmu) */
+@media (hover: hover) {
+    .game-card:hover { 
+        transform: translateY(-10px); /* Melayang ke atas */
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        border-color: var(--prm); /* Border Biru Muncul */
+    }
+    
+    .game-card:hover .icon {
+        transform: scale(1.1); /* Ikon sedikit membesar */
+    }
+}
+
+/* EFEK ACTIVE (Mobile Style - Respon Cepat di Jari) */
+.game-card:active { 
+    transform: scale(0.92); 
+    background: #f1f5f9;
+    box-shadow: none;
+    transition: 0.1s;
+}
+
+.icon { 
+    font-size: 3.5rem; 
+    margin-bottom: 12px; 
+    display: block; 
+    transition: transform 0.3s ease;
+}
+
+.game-card h3 { 
+    font-size: 1.1rem; 
+    margin: 0; 
+    color: var(--slate-dark);
+    font-weight: 700;
+}
+
+/* --- GAME AREA --- */
+#game-area { 
+    background: var(--white); 
+    padding: 20px; 
+    border-radius: 30px; 
+    min-height: 80vh; 
+    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+}
+
+.game-nav { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 25px;
+    gap: 12px;
+}
+
+.btn-back { 
+    padding: 12px 20px; 
+    border-radius: 15px; 
+    border: none; 
+    background: #f1f5f9; 
+    color: var(--slate); 
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+    color: var(--slate-dark);
+}
+
+/* Timer & Skor Display */
+#game-stats {
+    padding: 12px 20px;
+    background: var(--prm-light);
+    border-radius: 15px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--prm);
+    border: 2px solid #bfdbfe;
+    flex-grow: 1;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* --- GAME CONTENT --- */
+#game-canvas-wrapper { 
+    text-align: center; 
+    width: 100%;
+}
+
+canvas { 
+    background: #ffffff; 
+    display: block; 
+    margin: 0 auto; 
+    max-width: 100%; 
+    height: auto !important; 
+    border-radius: 20px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Input Styling (Anti-Zoom Mobile) */
+input[type="number"], 
+input[type="text"] {
+    font-size: 1.5rem !important; 
+    padding: 15px;
+    border-radius: 18px;
+    border: 3px solid #e2e8f0;
+    outline: none;
+    transition: 0.3s;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+input:focus {
+    border-color: var(--prm);
+    box-shadow: 0 0 0 4px var(--prm-light);
+}
+
+/* Hapus Spinner Input Number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
