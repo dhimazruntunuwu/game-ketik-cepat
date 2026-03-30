@@ -27,7 +27,15 @@ const games = [
     { id: 'jigsaw', name: 'Jigsaw', icon: '🧩' },
     {id: "ular_tangga", name: "Ular Tangga",icon: "🎲"},
     { id: "tebak_koin", name: "Tebak Koin", icon: "🪙" },
-    { id: "suit", name: "Suit Jepang", icon: "✊" }
+    { id: "suit", name: "Suit Jepang", icon: "✊" },
+    { id: 'word_scramble', name: 'Susun Kata', icon: '🔤' },
+    { id: 'tower_defense', name: 'Benteng TD', icon: '🏹' },
+    { id: 'sudoku', name: 'Sudoku Mini', icon: '🔢' },
+    { id: 'rhythm', name: 'Rhythm Master', icon: '🎵' },
+    { id: 'hole', name: 'Hole.io Lite', icon: '🕳️' },
+    { id: 'liquid_sort', name: 'Liquid Sort', icon: '🧪' },
+    { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀' },
+    { id: 'piano', name: 'Piano Hero', icon: '🎹' }
 ];
 
 let timeLeft = 60;
@@ -71,8 +79,9 @@ function launchGame(id) {
    // 2. Cek Mode (Santai vs Timer)
     const zenGames = ['snake', 'dino', 'drawing', 'code', 
         'bricks', 'tetris', 'racer', 'knife', 'minesweeper',
-         'simon', 'minesweeper', 'simon', 'jigsaw', 'ular_tangga',
-        'tebak_koin', 'suit'];
+         'simon', 'jigsaw', 'ular_tangga', 'word_scramble',
+        'tebak_koin', 'suit', 'tower_defense', 'sudoku',
+        'rhythm', 'hole', 'liquid_sort', 'lunar_lander', 'piano'];
     if (zenGames.includes(id)) {
         stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
     } else {
@@ -111,6 +120,14 @@ function launchGame(id) {
         case 'ular_tangga': startUlarTanggaGame(); break;
         case 'tebak_koin': startTebakKoinGame(); break;
         case 'suit': startSuitGame(); break;
+        case 'word_scramble': startWordScrambleGame(); break;
+        case 'tower_defense': startTowerDefenseGame(); break;
+        case 'sudoku': startSudokuGame(); break;
+        case 'rhythm': startRhythmGame(); break;
+        case 'hole': startHoleGame(); break;
+        case 'liquid_sort': startLiquidSortGame(); break;
+        case 'lunar_lander': startLunarLanderGame(); break;
+        case 'piano': startPianoGame(); break;
 
         default: console.error("Fungsi game tidak ditemukan!");
     }
