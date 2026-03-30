@@ -17,7 +17,8 @@ const games = [
     { id: 'flappy', name: 'Flappy Box', icon: '📦' },
     { id: '2048', name: '2048 Lite', icon: '🔢' },
     { id: 'stack', name: 'Tower Stack', icon: '🏗️' },
-    { id: 'bricks', name: 'Brick Breaker', icon: '🧱' }
+    { id: 'bricks', name: 'Brick Breaker', icon: '🧱' },
+    { id: 'tetris', name: 'Tetris Classic', icon: '🧱' }
 ];
 
 let timeLeft = 60;
@@ -59,7 +60,7 @@ function launchGame(id) {
     const stats = document.getElementById('game-stats');
 
    // 2. Cek Mode (Santai vs Timer)
-    const zenGames = ['snake', 'dino', 'drawing', 'code', 'bricks'];
+    const zenGames = ['snake', 'dino', 'drawing', 'code', 'bricks', 'tetris'];
     if (zenGames.includes(id)) {
         stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
     } else {
@@ -88,6 +89,7 @@ function launchGame(id) {
         case '2048': start2048Game(); break;
         case 'stack': startStackGame(); break;
         case 'bricks': startBricksGame(); break;
+        case 'tetris': startTetrisGame(); break;
         default: console.error("Fungsi game tidak ditemukan!");
     }
 }
