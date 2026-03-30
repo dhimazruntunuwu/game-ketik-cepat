@@ -3,22 +3,24 @@ const games = [
     { id: 'typing', name: 'Ketik Cepat', icon: '⌨️' },
     { id: 'snake', name: 'Snake Klasik', icon: '🐍' },
     { id: 'bug', name: 'Catch Bug', icon: '🦟' },
-    { id: 'memory', name: 'Memo-Droid', icon: '🧩' },
+    { id: 'memory', name: 'Memo-Droid', icon: '🧠' },
     { id: 'tictactoe', name: 'Tic-Tac-Toe', icon: '⭕' },
     { id: 'math', name: 'Math Rush', icon: '➕' },
     { id: 'whac', name: 'Whack-a-Mole', icon: '🔨' },
-    { id: 'dino', name: 'Dino Jump', icon: '🦖' },
-    { id: 'code', name: 'Tebak Kode', icon: '🔢' },
-    { id: 'color', name: 'Color Match', icon: '🎨' },
+    { id: 'dino', name: 'Dino Jump', icon: '🌵' },
+    { id: 'code', name: 'Tebak Kode', icon: '🔐' },
+    { id: 'color', name: 'Color Match', icon: '🌈' },
     { id: 'math_sub', name: 'Kurang-Kurangan', icon: '➖' },
     { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️' },
     { id: 'math_div', name: 'Bagi-Bagian', icon: '➗' },
     { id: 'drawing', name: 'Menggambar', icon: '🎨' },
-    { id: 'flappy', name: 'Flappy Box', icon: '📦' },
+    { id: 'flappy', name: 'Flappy Box', icon: '🐦' },
     { id: '2048', name: '2048 Lite', icon: '🔢' },
     { id: 'stack', name: 'Tower Stack', icon: '🏗️' },
     { id: 'bricks', name: 'Brick Breaker', icon: '🧱' },
-    { id: 'tetris', name: 'Tetris Classic', icon: '🧱' }
+    { id: 'tetris', name: 'Tetris Classic', icon: '🕹️' },
+    { id: 'racer', name: 'Traffic Racer', icon: '🏎️' },
+    { id: 'knife', name: 'Knife Hit', icon: '🔪' },
 ];
 
 let timeLeft = 60;
@@ -60,7 +62,7 @@ function launchGame(id) {
     const stats = document.getElementById('game-stats');
 
    // 2. Cek Mode (Santai vs Timer)
-    const zenGames = ['snake', 'dino', 'drawing', 'code', 'bricks', 'tetris'];
+    const zenGames = ['snake', 'dino', 'drawing', 'code', 'bricks', 'tetris', 'racer', 'knife'];
     if (zenGames.includes(id)) {
         stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
     } else {
@@ -90,6 +92,9 @@ function launchGame(id) {
         case 'stack': startStackGame(); break;
         case 'bricks': startBricksGame(); break;
         case 'tetris': startTetrisGame(); break;
+        case 'racer': startRacerGame(); break;
+        case 'knife': startKnifeGame(); break;
+
         default: console.error("Fungsi game tidak ditemukan!");
     }
 }
