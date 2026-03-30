@@ -25,6 +25,7 @@ const games = [
     { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣' },
     { id: 'simon', name: 'Simon Says', icon: '🧠' },
     { id: 'jigsaw', name: 'Jigsaw', icon: '🧩' },
+    {id: "ular_tangga", name: "Ular Tangga",icon: "🎲"}
 ];
 
 let timeLeft = 60;
@@ -68,7 +69,7 @@ function launchGame(id) {
    // 2. Cek Mode (Santai vs Timer)
     const zenGames = ['snake', 'dino', 'drawing', 'code', 
         'bricks', 'tetris', 'racer', 'knife', 'minesweeper',
-         'simon', 'minesweeper', 'simon', 'jigsaw'];
+         'simon', 'minesweeper', 'simon', 'jigsaw', 'ular_tangga'];
     if (zenGames.includes(id)) {
         stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
     } else {
@@ -104,6 +105,7 @@ function launchGame(id) {
         case 'simon': startSimonGame(); break;
         case 'miner': startMinerGame(); break;
         case 'jigsaw': startJigsawGame(); break;
+        case 'ular_tangga': startUlarTanggaGame(); break;
 
         default: console.error("Fungsi game tidak ditemukan!");
     }
