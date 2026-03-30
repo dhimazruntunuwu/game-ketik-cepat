@@ -36,7 +36,8 @@ const games = [
     { id: 'liquid_sort', name: 'Liquid Sort', icon: '🧪' },
     { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀' },
     { id: 'piano', name: 'Piano Hero', icon: '🎹' },
-    { id: 'math_quest', name: 'Math Quest', icon: '🛡️' }
+    { id: 'math_quest', name: 'Math Quest', icon: '🛡️' },
+    { id: 'math_story', name: 'Math Story', icon: '📚' }
 
 ];
 
@@ -84,7 +85,7 @@ function launchGame(id) {
          'simon', 'jigsaw', 'ular_tangga', 'word_scramble',
         'tebak_koin', 'suit', 'tower_defense', 'sudoku',
         'rhythm', 'hole', 'liquid_sort', 'lunar_lander', 'piano',
-        'math_quest'];
+        'math_quest', 'math_story'];
     if (zenGames.includes(id)) {
         stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
     } else {
@@ -132,6 +133,7 @@ function launchGame(id) {
         case 'lunar_lander': startLunarLanderGame(); break;
         case 'piano': startPianoGame(); break;
         case 'math_quest': startMathQuest(); break;
+        case 'math_story': startMathStory(); break;
 
         default: console.error("Fungsi game tidak ditemukan!");
     }
