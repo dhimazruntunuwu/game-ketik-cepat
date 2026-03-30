@@ -1,52 +1,61 @@
-// Daftar Game (Total 14 Game)
+/**
+ * Konfigurasi Database Game
+ * id: ID unik game
+ * name: Nama yang tampil di menu
+ * icon: Emoji ikon
+ * isZen: true (Mode Santai), false (Pakai Timer 60s)
+ * method: Nama fungsi yang dipanggil untuk mulai game
+ */
 const games = [
-    { id: 'typing', name: 'Ketik Cepat', icon: '⌨️' },
-    { id: 'snake', name: 'Snake Klasik', icon: '🐍' },
-    { id: 'bug', name: 'Catch Bug', icon: '🦟' },
-    { id: 'memory', name: 'Memo-Droid', icon: '🧠' },
-    { id: 'tictactoe', name: 'Tic-Tac-Toe', icon: '⭕' },
-    { id: 'math', name: 'Math Rush', icon: '➕' },
-    { id: 'whac', name: 'Whack-a-Mole', icon: '🔨' },
-    { id: 'dino', name: 'Dino Jump', icon: '🌵' },
-    { id: 'code', name: 'Tebak Kode', icon: '🔐' },
-    { id: 'color', name: 'Color Match', icon: '🌈' },
-    { id: 'math_sub', name: 'Kurang-Kurangan', icon: '➖' },
-    { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️' },
-    { id: 'math_div', name: 'Bagi-Bagian', icon: '➗' },
-    { id: 'drawing', name: 'Menggambar', icon: '🎨' },
-    { id: 'flappy', name: 'Flappy Box', icon: '🐦' },
-    { id: '2048', name: '2048 Lite', icon: '🔢' },
-    { id: 'stack', name: 'Tower Stack', icon: '🏗️' },
-    { id: 'bricks', name: 'Brick Breaker', icon: '🧱' },
-    { id: 'tetris', name: 'Tetris Classic', icon: '🕹️' },
-    { id: 'racer', name: 'Traffic Racer', icon: '🏎️' },
-    { id: 'knife', name: 'Knife Hit', icon: '🔪' },
-    { id: 'miner', name: 'Gold Miner', icon: '⛏️' },
-    { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣' },
-    { id: 'simon', name: 'Simon Says', icon: '🧠' },
-    { id: 'jigsaw', name: 'Jigsaw', icon: '🧩' },
-    {id: "ular_tangga", name: "Ular Tangga",icon: "🎲"},
-    { id: "tebak_koin", name: "Tebak Koin", icon: "🪙" },
-    { id: "suit", name: "Suit Jepang", icon: "✊" },
-    { id: 'word_scramble', name: 'Susun Kata', icon: '🔤' },
-    { id: 'tower_defense', name: 'Benteng TD', icon: '🏹' },
-    { id: 'sudoku', name: 'Sudoku Mini', icon: '🔢' },
-    { id: 'rhythm', name: 'Rhythm Master', icon: '🎵' },
-    { id: 'hole', name: 'Hole.io Lite', icon: '🕳️' },
-    { id: 'liquid_sort', name: 'Liquid Sort', icon: '🧪' },
-    { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀' },
-    { id: 'piano', name: 'Piano Hero', icon: '🎹' },
-    { id: 'math_quest', name: 'Math Quest', icon: '🛡️' },
-    { id: 'math_story', name: 'Math Story', icon: '📚' }
-
+    { id: 'typing', name: 'Ketik Cepat', icon: '⌨️', isZen: false, method: 'startTypingGame' },
+    { id: 'snake', name: 'Snake Klasik', icon: '🐍', isZen: true, method: 'startSnakeGame' },
+    { id: 'bug', name: 'Catch Bug', icon: '🦟', isZen: false, method: 'startBugGame' },
+    { id: 'memory', name: 'Memo-Droid', icon: '🧠', isZen: false, method: 'startMemoryGame' },
+    { id: 'tictactoe', name: 'Tic-Tac-Toe', icon: '⭕', isZen: false, method: 'startTictactoeGame' },
+    { id: 'math', name: 'Math Rush', icon: '➕', isZen: false, method: 'startMathGame' },
+    { id: 'whac', name: 'Whack-a-Mole', icon: '🔨', isZen: false, method: 'startWhacGame' },
+    { id: 'dino', name: 'Dino Jump', icon: '🌵', isZen: true, method: 'startDinoGame' },
+    { id: 'code', name: 'Tebak Kode', icon: '🔐', isZen: true, method: 'startCodeGame' },
+    { id: 'color', name: 'Color Match', icon: '🌈', isZen: false, method: 'startColorGame' },
+    { id: 'math_sub', name: 'Kurang-Kurangan', icon: '➖', isZen: false, method: 'startSubtractionGame' },
+    { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️', isZen: false, method: 'startMultiplicationGame' },
+    { id: 'math_div', name: 'Bagi-Bagian', icon: '➗', isZen: false, method: 'startDivisionGame' },
+    { id: 'drawing', name: 'Menggambar', icon: '🎨', isZen: true, method: 'startDrawingGame' },
+    { id: 'flappy', name: 'Flappy Box', icon: '🐦', isZen: false, method: 'startFlappyGame' },
+    { id: '2048', name: '2048 Lite', icon: '🔢', isZen: false, method: 'start2048Game' },
+    { id: 'stack', name: 'Tower Stack', icon: '🏗️', isZen: false, method: 'startStackGame' },
+    { id: 'bricks', name: 'Brick Breaker', icon: '🧱', isZen: true, method: 'startBricksGame' },
+    { id: 'tetris', name: 'Tetris Classic', icon: '🕹️', isZen: true, method: 'startTetrisGame' },
+    { id: 'racer', name: 'Traffic Racer', icon: '🏎️', isZen: true, method: 'startRacerGame' },
+    { id: 'knife', name: 'Knife Hit', icon: '🔪', isZen: true, method: 'startKnifeGame' },
+    { id: 'miner', name: 'Gold Miner', icon: '⛏️', isZen: false, method: 'startMinerGame' },
+    { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣', isZen: true, method: 'startMinesweeperGame' },
+    { id: 'simon', name: 'Simon Says', icon: '🧠', isZen: true, method: 'startSimonGame' },
+    { id: 'jigsaw', name: 'Jigsaw', icon: '🧩', isZen: true, method: 'startJigsawGame' },
+    { id: 'ular_tangga', name: 'Ular Tangga', icon: '🎲', isZen: true, method: 'startUlarTanggaGame' },
+    { id: 'tebak_koin', name: 'Tebak Koin', icon: '🪙', isZen: true, method: 'startTebakKoinGame' },
+    { id: 'suit', name: 'Suit Jepang', icon: '✊', isZen: true, method: 'startSuitGame' },
+    { id: 'word_scramble', name: 'Susun Kata', icon: '🔤', isZen: true, method: 'startWordScrambleGame' },
+    { id: 'tower_defense', name: 'Benteng TD', icon: '🏹', isZen: true, method: 'startTowerDefenseGame' },
+    { id: 'sudoku', name: 'Sudoku Mini', icon: '🔢', isZen: true, method: 'startSudokuGame' },
+    { id: 'rhythm', name: 'Rhythm Master', icon: '🎵', isZen: true, method: 'startRhythmGame' },
+    { id: 'hole', name: 'Hole.io Lite', icon: '🕳️', isZen: true, method: 'startHoleGame' },
+    { id: 'liquid_sort', name: 'Liquid Sort', icon: '🧪', isZen: true, method: 'startLiquidSortGame' },
+    { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀', isZen: true, method: 'startLunarLanderGame' },
+    { id: 'piano', name: 'Piano Hero', icon: '🎹', isZen: true, method: 'startPianoGame' },
+    { id: 'math_quest', name: 'Math Quest', icon: '🛡️', isZen: true, method: 'startMathQuest' },
+    { id: 'math_story', name: 'Math Story', icon: '📚', isZen: true, method: 'startMathStory' }
 ];
 
 let timeLeft = 60;
 let timerInterval;
 
+/**
+ * Inisialisasi Menu Utama
+ */
 function initMenu() {
     const grid = document.getElementById('menu-grid');
-    if(!grid) return;
+    if (!grid) return;
     grid.innerHTML = games.map(g => `
         <div class="game-card" onclick="launchGame('${g.id}')">
             <div class="icon">${g.icon}</div>
@@ -55,6 +64,9 @@ function initMenu() {
     `).join('');
 }
 
+/**
+ * Logika Timer Countdown
+ */
 function startCountdown() {
     const stats = document.getElementById('game-stats');
     timeLeft = 60; 
@@ -73,69 +85,38 @@ function startCountdown() {
     }, 1000);
 }
 
+/**
+ * Fungsi Launch Game Otomatis (Tanpa Switch Case)
+ */
 function launchGame(id) {
+    const game = games.find(g => g.id === id);
+    if (!game) return console.error("Game tidak ditemukan!");
+
+    // UI Transition
     document.getElementById('main-menu').classList.add('hidden');
     document.getElementById('game-area').classList.remove('hidden');
-    
-    const stats = document.getElementById('game-stats');
-
-   // 2. Cek Mode (Santai vs Timer)
-    const zenGames = ['snake', 'dino', 'drawing', 'code', 
-        'bricks', 'tetris', 'racer', 'knife', 'minesweeper',
-         'simon', 'jigsaw', 'ular_tangga', 'word_scramble',
-        'tebak_koin', 'suit', 'tower_defense', 'sudoku',
-        'rhythm', 'hole', 'liquid_sort', 'lunar_lander', 'piano',
-        'math_quest', 'math_story'];
-    if (zenGames.includes(id)) {
-        stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
-    } else {
-        startCountdown(); // Jalankan timer untuk Bug Game, Typing, dll.
-    }
-
-    // Pembersihan wrapper sebelum game baru dimulai
     document.getElementById('game-canvas-wrapper').innerHTML = '';
 
-    switch(id) {
-        case 'typing': startTypingGame(); break;
-        case 'snake': startSnakeGame(); break;
-        case 'bug': startBugGame(); break;
-        case 'memory': startMemoryGame(); break;
-        case 'tictactoe': startTictactoeGame(); break;
-        case 'math': startMathGame(); break;
-        case 'whac': startWhacGame(); break;
-        case 'dino': startDinoGame(); break;
-        case 'code': startCodeGame(); break;
-        case 'color': startColorGame(); break;
-        case 'math_sub': startSubtractionGame(); break;
-        case 'math_mul': startMultiplicationGame(); break;
-        case 'math_div': startDivisionGame(); break;
-        case 'drawing': startDrawingGame(); break;
-        case 'flappy': startFlappyGame(); break;
-        case '2048': start2048Game(); break;
-        case 'stack': startStackGame(); break;
-        case 'bricks': startBricksGame(); break;
-        case 'tetris': startTetrisGame(); break;
-        case 'racer': startRacerGame(); break;
-        case 'knife': startKnifeGame(); break;
-        case 'minesweeper': startMinesweeperGame(); break;
-        case 'simon': startSimonGame(); break;
-        case 'miner': startMinerGame(); break;
-        case 'jigsaw': startJigsawGame(); break;
-        case 'ular_tangga': startUlarTanggaGame(); break;
-        case 'tebak_koin': startTebakKoinGame(); break;
-        case 'suit': startSuitGame(); break;
-        case 'word_scramble': startWordScrambleGame(); break;
-        case 'tower_defense': startTowerDefenseGame(); break;
-        case 'sudoku': startSudokuGame(); break;
-        case 'rhythm': startRhythmGame(); break;
-        case 'hole': startHoleGame(); break;
-        case 'liquid_sort': startLiquidSortGame(); break;
-        case 'lunar_lander': startLunarLanderGame(); break;
-        case 'piano': startPianoGame(); break;
-        case 'math_quest': startMathQuest(); break;
-        case 'math_story': startMathStory(); break;
+    const stats = document.getElementById('game-stats');
 
-        default: console.error("Fungsi game tidak ditemukan!");
+    // Pengaturan Mode Game (Zen vs Timer)
+    if (game.isZen) {
+        stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
+        clearInterval(timerInterval);
+    } else {
+        startCountdown();
+    }
+
+    /**
+     * Memanggil fungsi game secara dinamis.
+     * window[game.method] akan mencari fungsi global dengan nama tersebut.
+     */
+    if (typeof window[game.method] === 'function') {
+        window[game.method]();
+    } else {
+        console.error(`Fungsi ${game.method} belum dibuat di folder /games/!`);
+        alert("Game ini sedang dalam pengembangan.");
+        goHome();
     }
 }
 
