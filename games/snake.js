@@ -2,8 +2,8 @@ function startSnakeGame() {
     const wrapper = document.getElementById('game-canvas-wrapper');
     const stats = document.getElementById('game-stats');
     
-    // Inisialisasi tampilan awal
-    stats.innerText = `Skor: 0 | ⏳ ${timeLeft}s`;
+    // Inisialisasi tampilan awal tanpa timer
+    stats.innerText = `Skor: 0 | 🐍 Mode Santai`;
 
     wrapper.innerHTML = `
         <div style="text-align:center;">
@@ -20,7 +20,7 @@ function startSnakeGame() {
 
     const canvas = document.getElementById('snakeCanvas');
     const ctx = canvas.getContext('2d');
-    const box = 15; // Ukuran kotak grid (20x20 grid)
+    const box = 15; 
     
     let snake = [{x: 10, y: 10}];
     let food = {x: 5, y: 5};
@@ -28,15 +28,12 @@ function startSnakeGame() {
     let score = 0;
     let isGameOver = false;
 
-    // Fungsi penggerak (bisa dipanggil dari tombol atau keyboard)
     window.moveSnake = (x, y) => {
         if(isGameOver) return;
-        // Mencegah balik arah langsung (misal: lagi ke kanan, gak boleh langsung ke kiri)
         if (x !== 0 && dx === 0) { dx = x; dy = 0; }
         if (y !== 0 && dy === 0) { dy = y; dx = 0; }
     };
 
-    // Keyboard support
     document.onkeydown = e => {
         if(e.key === 'ArrowUp') moveSnake(0, -1);
         if(e.key === 'ArrowDown') moveSnake(0, 1);
@@ -49,7 +46,6 @@ function startSnakeGame() {
 
         let head = {x: snake[0].x + dx, y: snake[0].y + dy};
 
-        // Tabrak Tembok atau Tubuh Sendiri
         const hitWall = head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20;
         const hitSelf = snake.some((s, index) => index !== 0 && s.x === head.x && s.y === head.y);
 
@@ -60,7 +56,6 @@ function startSnakeGame() {
             return;
         }
 
-        // Makan Food
         if(head.x === food.x && head.y === food.y) {
             score++;
             food = {
@@ -68,33 +63,28 @@ function startSnakeGame() {
                 y: Math.floor(Math.random() * 20)
             };
         } else {
-            // Jika tidak makan, ekor dipotong (Snake bergerak)
             if(dx !== 0 || dy !== 0) snake.pop();
         }
 
-        // Masukkan kepala baru
         if(dx !== 0 || dy !== 0) snake.unshift(head);
 
-        // Render Canvas
         ctx.fillStyle = "#1e293b";
         ctx.fillRect(0, 0, 300, 300);
 
-        // Gambar Snake
-        ctx.fillStyle = "#22c55e"; // Hijau cerah
+        ctx.fillStyle = "#22c55e"; 
         snake.forEach((s, index) => {
             ctx.fillRect(s.x * box, s.y * box, box - 2, box - 2);
-            if(index === 0) { // Mata di kepala
+            if(index === 0) {
                 ctx.fillStyle = "white";
                 ctx.fillRect(s.x * box + 4, s.y * box + 4, 3, 3);
             }
         });
 
-        // Gambar Food
-        ctx.fillStyle = "#ef4444"; // Merah apel
+        ctx.fillStyle = "#ef4444"; 
         ctx.fillRect(food.x * box, food.y * box, box - 2, box - 2);
 
-        // Update Stats dengan Timer Global
-        stats.innerText = `Skor: ${score} | ⏳ ${timeLeft}s`;
+        // Update Skor tanpa menampilkan timer
+        stats.innerText = `Skor: ${score} | 🐍 Mode Santai`;
 
         setTimeout(gameLoop, 150);
     }

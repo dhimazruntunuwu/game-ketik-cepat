@@ -2,72 +2,96 @@ function startDinoGame() {
     const wrapper = document.getElementById('game-canvas-wrapper');
     const stats = document.getElementById('game-stats');
     
-    // Inisialisasi tampilan stats awal
-    stats.innerText = `Skor: 0 | ⏳ ${timeLeft}s`;
+    stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
 
+    // 1. Buat HTML Canvas
     wrapper.innerHTML = `
-        <div style="text-align:center;">
-            <canvas id="dinoCanvas" width="600" height="150" style="border-bottom:2px solid #333; background:#fff; width:100%; max-width:600px;"></canvas>
-            <p style="color:#64748b; margin-top:10px;">Ketuk layar untuk melompat!</p>
+        <div style="text-align:center; width:100%;">
+            <canvas id="dinoCanvas" width="600" height="150" style="border-bottom:4px solid #334155; background:#fff; width:100%; max-width:600px; display:block; margin:0 auto;"></canvas>
+            <p style="color:#64748b; margin-top:10px; font-family:sans-serif;">Klik atau tekan <b>Spasi</b> untuk melompat!</p>
         </div>
     `;
     
     const canvas = document.getElementById('dinoCanvas');
+    if (!canvas) return; // Safety check
     const ctx = canvas.getContext('2d');
     
-    let dinoY = 130, jump = false, score = 0, cactusX = 600;
+    // 2. Variabel Game
+    const canvasHeight = 150;
+    const dinoSize = 30;
+    const groundY = canvasHeight - dinoSize; // 120
+
+    let dinoY = groundY; 
+    let velocityY = 0;
+    let score = 0;
+    let cactusX = 600;
     let isGameOver = false;
 
-    // Kontrol lompat
-    window.onclick = () => { if(dinoY === 130) jump = true; };
+    // 3. Fungsi Lompat (Local agar tidak bentrok)
+    const jumpAction = () => {
+        if (dinoY >= groundY - 1) {
+            velocityY = -10;
+        }
+    };
 
+    // Pasang listener secara spesifik
+    window.onclick = jumpAction;
+    window.onkeydown = (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault(); // Biar layar gak scrolling
+            jumpAction();
+        }
+    };
+
+    // 4. Game Loop
     function loop() {
-        if(isGameOver) return; // Hentikan loop jika kalah
+        if (isGameOver) return;
 
         ctx.clearRect(0, 0, 600, 150);
 
-        // Logika Lompat (Gravity & Jump)
-        if(jump) { 
-            dinoY -= 5; 
-            if(dinoY <= 60) jump = false; 
-        } else if(dinoY < 130) { 
-            dinoY += 5; 
+        // Fisika
+        velocityY += 0.6;
+        dinoY += velocityY;
+
+        // Kunci di Lantai
+        if (dinoY > groundY) {
+            dinoY = groundY;
+            velocityY = 0;
         }
 
-        // Logika Rintangan (Cactus)
-        cactusX -= 7; // Sedikit lebih cepat biar seru
-        if(cactusX < -20) { 
-            cactusX = 600; 
-            score++; 
-            // Update skor dan sinkronkan dengan timer global
-            stats.innerText = `Skor: ${score} | ⏳ ${timeLeft}s`;
+        // Gerakan Kaktus
+        cactusX -= 8;
+        if (cactusX < -30) {
+            cactusX = 600;
+            score++;
+            stats.innerText = `Skor: ${score} | 🦖 Mode Santai`;
         }
 
-        // Gambar Dino (Warna Biru biar senada dengan Hub)
+        // Gambar Dino (Biru) - Math.floor cegah melayang
         ctx.fillStyle = "#2563eb"; 
-        ctx.fillRect(50, dinoY - 20, 25, 25); 
+        ctx.fillRect(50, Math.floor(dinoY), dinoSize, dinoSize); 
 
-        // Gambar Rintangan (Merah)
+        // Gambar Kaktus (Merah)
         ctx.fillStyle = "#ef4444"; 
         ctx.fillRect(cactusX, 110, 20, 40); 
 
         // Deteksi Tabrakan
-        if(cactusX < 75 && cactusX > 30 && dinoY > 110) {
+        if (cactusX < 80 && cactusX > 30 && dinoY > 80) {
             isGameOver = true;
-            alert(`Yah, Nabrak! Skor Kamu: ${score}`);
-            goHome(); // Kembali ke menu utama (main.js akan clear timer)
+            // Bersihkan listener sebelum keluar
+            window.onclick = null;
+            window.onkeydown = null;
+            
+            alert(`Yah, Nabrak! Skor: ${score}`);
+            goHome(); 
             return;
         }
-
-        // Update timer secara berkala jika tidak ada perubahan skor
-        if (frameCounter % 30 === 0) { // Update setiap ~0.5 detik
-             stats.innerText = `Skor: ${score} | ⏳ ${timeLeft}s`;
-        }
-        frameCounter++;
 
         requestAnimationFrame(loop);
     }
 
-    let frameCounter = 0;
-    loop();
+    // Mulai loop setelah jeda singkat (agar canvas render sempurna)
+    setTimeout(() => {
+        loop();
+    }, 50);
 }

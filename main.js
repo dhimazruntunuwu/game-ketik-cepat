@@ -13,7 +13,11 @@ const games = [
     { id: 'math_sub', name: 'Kurang-Kurangan', icon: '➖' },
     { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️' },
     { id: 'math_div', name: 'Bagi-Bagian', icon: '➗' },
-    { id: 'drawing', name: 'Menggambar', icon: '🎨' }
+    { id: 'drawing', name: 'Menggambar', icon: '🎨' },
+    { id: 'flappy', name: 'Flappy Box', icon: '📦' },
+    { id: '2048', name: '2048 Lite', icon: '🔢' },
+    { id: 'stack', name: 'Tower Stack', icon: '🏗️' },
+    { id: 'bricks', name: 'Brick Breaker', icon: '🧱' }
 ];
 
 let timeLeft = 60;
@@ -54,12 +58,12 @@ function launchGame(id) {
     
     const stats = document.getElementById('game-stats');
 
-    // LOGIKA KHUSUS TIMER
-    if (id === 'drawing') {
-        clearInterval(timerInterval); // Hentikan timer jika ada sisa
-        stats.innerText = "Mode Bebas Menggambar 🎨";
+   // 2. Cek Mode (Santai vs Timer)
+    const zenGames = ['snake', 'dino', 'drawing', 'code', 'bricks'];
+    if (zenGames.includes(id)) {
+        stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
     } else {
-        startCountdown(); // Jalankan timer untuk game lainnya
+        startCountdown(); // Jalankan timer untuk Bug Game, Typing, dll.
     }
 
     // Pembersihan wrapper sebelum game baru dimulai
@@ -73,13 +77,17 @@ function launchGame(id) {
         case 'tictactoe': startTictactoeGame(); break;
         case 'math': startMathGame(); break;
         case 'whac': startWhacGame(); break;
-        case 'dino': startPlatformerGame(); break;
+        case 'dino': startDinoGame(); break;
         case 'code': startCodeGame(); break;
         case 'color': startColorGame(); break;
         case 'math_sub': startSubtractionGame(); break;
         case 'math_mul': startMultiplicationGame(); break;
         case 'math_div': startDivisionGame(); break;
         case 'drawing': startDrawingGame(); break;
+        case 'flappy': startFlappyGame(); break;
+        case '2048': start2048Game(); break;
+        case 'stack': startStackGame(); break;
+        case 'bricks': startBricksGame(); break;
         default: console.error("Fungsi game tidak ditemukan!");
     }
 }
