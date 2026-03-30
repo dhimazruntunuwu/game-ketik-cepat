@@ -133,16 +133,16 @@ header h1 {
     padding: 12px 20px; 
     border-radius: 15px; 
     border: none; 
-    background: #f1f5f9; 
-    color: var(--slate); 
+    /* Gunakan variabel prm-light agar di dark mode warnanya biru gelap, bukan abu-abu terang */
+    background: var(--prm-light); 
+    color: var(--prm); 
     font-weight: 700;
     cursor: pointer;
     transition: 0.2s;
 }
 
 .btn-back:hover {
-    background: #e2e8f0;
-    color: var(--slate-dark);
+    filter: brightness(1.1); /* Memberi efek hover tanpa merusak warna tema */
 }
 
 /* Timer & Skor Display */
@@ -160,9 +160,8 @@ header h1 {
 }
 
 /* --- GAME CONTENT --- */
-#game-canvas-wrapper { 
-    text-align: center; 
-    width: 100%;
+#game-canvas-wrapper {
+    background: transparent;
 }
 
 canvas { 
@@ -212,4 +211,69 @@ canvas {
     max-width: 100%;
     height: auto;
     touch-action: none; /* Mencegah scroll saat menggambar */
+}
+
+/* 1. Tambahkan Variabel Warna Dark Mode di bagian atas */
+[data-theme="dark"] {
+    --bg: #0f172a;           /* Background gelap (Slate 900) */
+    --card-bg: #1e293b;      /* Background kartu (Slate 800) */
+    --white: #1e293b;        /* Pengganti warna putih */
+    --slate-dark: #f1f5f9;   /* Teks utama jadi terang */
+    --slate: #94a3b8;        /* Teks sekunder */
+    --prm-light: #1e3a8a;    /* Biru gelap untuk stats */
+    --prm: #60a5fa;          /* Biru terang untuk aksen */
+}
+
+/* 2. Pastikan body mendukung transisi warna yang halus */
+body { 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    background: var(--bg); 
+    color: var(--slate-dark);
+    transition: background 0.3s ease, color 0.3s ease; /* Tambahkan ini */
+    margin: 0; 
+    padding: 15px; 
+}
+
+/* 3. Update styling kartu agar menggunakan variabel */
+.game-card { 
+    background: var(--white); /* Ini otomatis jadi gelap saat dark mode */
+    color: var(--slate-dark);
+    /* ... sisa kode card kamu ... */
+}
+
+/* 4. Styling khusus untuk Tombol Toggle Theme */
+#theme-toggle {
+    margin-top: 10px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 2px solid var(--prm);
+    background: transparent;
+    color: var(--prm);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#theme-toggle:hover {
+    background: var(--prm);
+    color: white;
+}
+
+/* 5. Penyesuaian Game Area agar tidak silau */
+#game-area { 
+    background: var(--white); /* Variabel ini akan otomatis jadi gelap di dark mode */
+    padding: 20px; 
+    border-radius: 30px; 
+    min-height: 80vh; 
+    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+    color: var(--slate-dark); /* Agar teks di dalamnya ikut terang saat dark mode */
+}
+
+/* 6. Update Input agar teksnya kelihatan di mode gelap */
+input[type="number"], 
+input[type="text"] {
+    background: var(--bg);
+    color: var(--slate-dark);
+    border: 2px solid var(--slate);
+    /* ... sisa kode input kamu ... */
 }

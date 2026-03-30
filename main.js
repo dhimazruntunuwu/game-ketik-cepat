@@ -50,10 +50,36 @@ const games = [
 let timeLeft = 60;
 let timerInterval;
 
+// --- TAMBAHAN 1: LOGIKA TEMA (DARK MODE) ---
+function initTheme() {
+    // Ambil preferensi dari storage, default ke 'light'
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeButton(newTheme);
+}
+
+function updateThemeButton(theme) {
+    const btn = document.getElementById('theme-toggle');
+    if (btn) {
+        btn.innerHTML = theme === 'light' ? '🌙 Mode Gelap' : '☀️ Mode Terang';
+    }
+}
+// ------------------------------------------
+
 /**
  * Inisialisasi Menu Utama
  */
 function initMenu() {
+    initTheme();
     const grid = document.getElementById('menu-grid');
     if (!grid) return;
     grid.innerHTML = games.map(g => `
@@ -121,8 +147,19 @@ function launchGame(id) {
 }
 
 function goHome() {
+    // Hentikan timer agar tidak bocor ke game lain
     clearInterval(timerInterval);
-    location.reload(); 
+    
+    // Sembunyikan area game & tampilkan menu (Tanpa Refresh)
+    document.getElementById('game-area').classList.add('hidden');
+    document.getElementById('main-menu').classList.remove('hidden');
+    
+    // Bersihkan canvas agar memori tidak berat
+    const wrapper = document.getElementById('game-canvas-wrapper');
+    wrapper.innerHTML = ''; 
+    
+    // Reset skor tampilan
+    document.getElementById('game-stats').innerText = "Skor: 0";
 }
 
 window.onload = initMenu;
