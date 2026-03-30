@@ -21,6 +21,9 @@ const games = [
     { id: 'tetris', name: 'Tetris Classic', icon: '🕹️' },
     { id: 'racer', name: 'Traffic Racer', icon: '🏎️' },
     { id: 'knife', name: 'Knife Hit', icon: '🔪' },
+    { id: 'miner', name: 'Gold Miner', icon: '⛏️' },
+    { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣' },
+    { id: 'simon', name: 'Simon Says', icon: '🧠' }
 ];
 
 let timeLeft = 60;
@@ -62,7 +65,9 @@ function launchGame(id) {
     const stats = document.getElementById('game-stats');
 
    // 2. Cek Mode (Santai vs Timer)
-    const zenGames = ['snake', 'dino', 'drawing', 'code', 'bricks', 'tetris', 'racer', 'knife'];
+    const zenGames = ['snake', 'dino', 'drawing', 'code', 
+        'bricks', 'tetris', 'racer', 'knife', 'minesweeper',
+         'simon', 'minesweeper', 'simon'];
     if (zenGames.includes(id)) {
         stats.innerText = `Skor: 0 | 🦖 Mode Santai`;
     } else {
@@ -94,6 +99,9 @@ function launchGame(id) {
         case 'tetris': startTetrisGame(); break;
         case 'racer': startRacerGame(); break;
         case 'knife': startKnifeGame(); break;
+        case 'minesweeper': startMinesweeperGame(); break;
+        case 'simon': startSimonGame(); break;
+        case 'miner': startMinerGame();
 
         default: console.error("Fungsi game tidak ditemukan!");
     }
