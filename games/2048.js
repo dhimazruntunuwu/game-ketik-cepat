@@ -2,17 +2,16 @@ window.start2048Game = function() {
     const wrapper = document.getElementById('game-canvas-wrapper');
     const stats = document.getElementById('game-stats');
     
-    // 1. Inisialisasi Board 4x4 (Array 16 elemen)
     let board = Array(16).fill(0);
     let score = 0;
     let touchStartX = 0, touchStartY = 0;
+    let isGameOver = false; // Flag untuk status game
 
     stats.innerText = `Skor: 0 | 🔢 2048 Mode Santai`;
 
-    // 2. Fungsi Gambar Tampilan
     function draw() {
         wrapper.innerHTML = `
-            <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; background:#bbada0; padding:10px; width:300px; height:300px; margin:auto; border-radius:10px; touch-action:none; user-select:none;">
+            <div id="game-2048-container" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; background:#bbada0; padding:10px; width:300px; height:300px; margin:auto; border-radius:10px; touch-action:none; user-select:none;">
                 ${board.map(n => {
                     let color = n === 0 ? '#cdc1b4' : (n <= 4 ? '#eee4da' : (n <= 16 ? '#f2b179' : '#f59563'));
                     let textColor = n <= 4 ? '#776e65' : '#f9f6f2';
@@ -23,18 +22,43 @@ window.start2048Game = function() {
         `;
     }
 
-    // 3. Tambah Angka Acak (2 atau 4)
     function addNumber() {
         let empty = board.map((n, i) => n === 0 ? i : null).filter(n => n !== null);
         if (empty.length) {
             board[empty[Math.floor(Math.random() * empty.length)]] = Math.random() > 0.1 ? 2 : 4;
             draw();
+            checkGameOver(); // Cek setiap kali angka baru muncul
         }
     }
 
-    // 4. LOGIKA UTAMA: Geser & Gabung
+    // --- TAMBAHAN: FUNGSI CEK GAME OVER ---
+    function checkGameOver() {
+        // Cek jika masih ada kotak kosong
+        if (board.includes(0)) return;
+
+        // Cek jika masih ada angka bertetangga yang sama (Horizontal & Vertical)
+        for (let i = 0; i < 16; i++) {
+            // Cek Kanan
+            if (i % 4 !== 3 && board[i] === board[i + 1]) return;
+            // Cek Bawah
+            if (i < 12 && board[i] === board[i + 4]) return;
+        }
+
+        // Jika sampai sini, berarti tidak ada gerakan lagi
+        isGameOver = true;
+        
+        // 1. Kirim ke Spreadsheet
+        saveToSpreadsheet('2048', score); 
+
+        // 2. Beritahu user
+        alert(`Game Over! Skor Akhir: ${score}`);
+
+        // 3. Tampilkan Leaderboard
+        showLeaderboard('2048');
+    }
+
     function slide(row) {
-        let arr = row.filter(n => n !== 0); // Buang nol
+        let arr = row.filter(n => n !== 0);
         for (let i = 0; i < arr.length - 1; i++) {
             if (arr[i] === arr[i + 1]) {
                 arr[i] *= 2;
@@ -42,12 +66,14 @@ window.start2048Game = function() {
                 arr[i + 1] = 0;
             }
         }
-        arr = arr.filter(n => n !== 0); // Buang nol lagi setelah gabung
-        while (arr.length < 4) arr.push(0); // Isi sisanya dengan nol
+        arr = arr.filter(n => n !== 0);
+        while (arr.length < 4) arr.push(0);
         return arr;
     }
 
     function move(dir) {
+        if (isGameOver) return; // Stop jika game sudah selesai
+        
         let oldBoard = [...board];
         for (let i = 0; i < 4; i++) {
             let row = [];
@@ -66,22 +92,22 @@ window.start2048Game = function() {
             }
         }
         
-        // Hanya tambah angka baru jika ada yang berubah
         if (JSON.stringify(oldBoard) !== JSON.stringify(board)) {
             addNumber();
             stats.innerText = `Skor: ${score} | 🔢 2048 Mode Santai`;
         }
     }
 
-    // 5. Input Keyboard
     window.onkeydown = (e) => {
-        if (e.key === 'ArrowLeft' || e.key === 'a') move('left');
-        if (e.key === 'ArrowRight' || e.key === 'd') move('right');
-        if (e.key === 'ArrowUp' || e.key === 'w') move('up');
-        if (e.key === 'ArrowDown' || e.key === 's') move('down');
+        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'a', 's', 'd', 'w'].includes(e.key)) {
+            e.preventDefault(); // Mencegah layar scroll saat main
+            if (e.key === 'ArrowLeft' || e.key === 'a') move('left');
+            if (e.key === 'ArrowRight' || e.key === 'd') move('right');
+            if (e.key === 'ArrowUp' || e.key === 'w') move('up');
+            if (e.key === 'ArrowDown' || e.key === 's') move('down');
+        }
     };
 
-    // 6. Input Touch (Swipe HP)
     wrapper.ontouchstart = (e) => {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
@@ -97,6 +123,5 @@ window.start2048Game = function() {
         }
     };
 
-    // Jalankan Game
     addNumber(); addNumber();
 };

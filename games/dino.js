@@ -78,12 +78,23 @@ function startDinoGame() {
         // Deteksi Tabrakan
         if (cactusX < 80 && cactusX > 30 && dinoY > 80) {
             isGameOver = true;
-            // Bersihkan listener sebelum keluar
+            
+            // 1. Matikan listener input agar tidak ada lompatan setelah mati
             window.onclick = null;
             window.onkeydown = null;
             
-            alert(`Yah, Nabrak! Skor: ${score}`);
-            goHome(); 
+            // 2. KIRIM SKOR KE SPREADSHEET
+            // Pastikan ID 'dino' sesuai dengan list di main.js kamu
+            saveToSpreadsheet('dino', score); 
+
+            // 3. Tampilkan pesan Game Over
+            alert(`Yah, Nabrak! Skor Akhir: ${score}`);
+            
+            // 4. TAMPILKAN LEADERBOARD GLOBAL
+            showLeaderboard('dino');
+
+            // Kita tidak memanggil goHome() secara otomatis agar 
+            // user punya waktu melihat papan skor di layar.
             return;
         }
 

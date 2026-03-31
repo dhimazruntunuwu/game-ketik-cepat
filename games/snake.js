@@ -51,8 +51,20 @@ function startSnakeGame() {
 
         if(hitWall || hitSelf) {
             isGameOver = true;
-            alert(`Aww! Nabrak! Skor Akhir: ${score}`);
-            goHome();
+
+            // --- 1. SIMPAN SKOR KE SPREADSHEET ---
+            saveToSpreadsheet('snake', score); 
+
+            // --- 2. TAMPILKAN NOTIFIKASI ---
+            alert(`Aww! Nabrak!\nSkor Akhir: ${score}`);
+
+            // --- 3. TAMPILKAN LEADERBOARD ---
+            showLeaderboard('snake');
+
+            // Hapus event listener agar tidak bentrok dengan game lain
+            document.onkeydown = null;
+            
+            // goHome(); // Sebaiknya jangan langsung goHome agar user bisa lihat leaderboard
             return;
         }
 

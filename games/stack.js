@@ -106,10 +106,24 @@ window.startStackGame = function() {
     }
 
     function endGame() {
+        if (isGameOver) return; // Mencegah fungsi terpanggil dua kali
+        
         isGameOver = true;
+
+        // 1. Matikan kontrol klik agar tidak ada balok jatuh setelah game over
         window.onclick = null;
-        alert(`Yah, Runtuh! Tinggi Menara: ${score} Lantai`);
-        goHome();
+
+        // 2. KIRIM DATA KE SPREADSHEET
+        // Gunakan ID 'stack' (pastikan sama dengan ID di main.js)
+        saveToSpreadsheet('stack', score);
+
+        // 3. Beri sedikit jeda sebelum menampilkan alert dan leaderboard
+        setTimeout(() => {
+            alert(`Yah, Runtuh! Tinggi Menara: ${score} Lantai`);
+            
+            // 4. TAMPILKAN LEADERBOARD GLOBAL
+            showLeaderboard('stack');
+        }, 100);
     }
 
     loop();

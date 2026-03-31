@@ -121,15 +121,27 @@ window.startFlappyGame = function() {
     }
 
     function endGame() {
+        // Jika sudah game over, jangan jalankan fungsi ini lagi
+        if (isGameOver) return; 
+        
         isGameOver = true;
-        // Bersihkan event agar tidak mengganggu game lain
+
+        // 1. Matikan kontrol input segera
         window.onclick = null;
         window.onkeydown = null;
-        
+
+        // 2. KIRIM DATA KE SPREADSHEET
+        // Gunakan ID 'flappy' sesuai dengan daftar games di main.js
+        saveToSpreadsheet('flappy', score);
+
+        // 3. Tampilkan pesan skor
+        // Gunakan sedikit delay agar render frame terakhir terlihat dulu
         setTimeout(() => {
-            alert(`Yah, Kandas! Skor: ${score}`);
-            goHome();
-        }, 10);
+            alert(`Yah, Kandas! Skor Akhir: ${score}`);
+            
+            // 4. TAMPILKAN LEADERBOARD GLOBAL
+            showLeaderboard('flappy');
+        }, 100);
     }
 
     loop();

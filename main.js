@@ -6,6 +6,10 @@
  * isZen: true (Mode Santai), false (Pakai Timer 60s)
  * method: Nama fungsi yang dipanggil untuk mulai game
  */
+
+// URL Web App dari Google Apps Script (Ganti dengan URL milikmu)
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVoVPNOf_aGlgDvj7VlUHS65-FYe896rwt0alTEYoPD9idL_j5PM8szBhlOzr9Ws76/exec";
+
 const games = [
     { id: 'typing', name: 'Ketik Cepat', icon: '⌨️', isZen: false, method: 'startTypingGame' },
     { id: 'snake', name: 'Snake Klasik', icon: '🐍', isZen: true, method: 'startSnakeGame' },
@@ -44,11 +48,43 @@ const games = [
     { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀', isZen: true, method: 'startLunarLanderGame' },
     { id: 'piano', name: 'Piano Hero', icon: '🎹', isZen: true, method: 'startPianoGame' },
     { id: 'math_quest', name: 'Math Quest', icon: '🛡️', isZen: true, method: 'startMathQuest' },
-    { id: 'math_story', name: 'Math Story', icon: '📚', isZen: true, method: 'startMathStory' }
+    { id: 'math_story', name: 'Math Story', icon: '📚', isZen: true, method: 'startMathStory' },
+    { id: 'gravity', name: 'Gravity Flip', icon: '🌌', isZen: true, method: 'startGravityGame' },
+    { id: 'light_reflector', name: 'Laser Mirror', icon: '🔦', isZen: true, method: 'startLightReflector' },
 ];
 
 let timeLeft = 60;
 let timerInterval;
+
+// --- 1. LOGIKA USERNAME & PENYIMPANAN ---
+function checkUser() {
+    const savedName = localStorage.getItem('playerName');
+    const userDisplay = document.getElementById('user-display');
+    const inputArea = document.getElementById('name-input-area');
+    const editLabel = document.getElementById('edit-label'); // Ambil label ganti
+
+    if (savedName) {
+        userDisplay.innerText = `👤 ${savedName}`;
+        inputArea.style.display = 'none'; 
+        if (editLabel) editLabel.style.display = 'inline'; // Tampilkan tulisan (Ganti)
+    } else {
+        userDisplay.innerText = '';
+        inputArea.style.display = 'block'; 
+        if (editLabel) editLabel.style.display = 'none'; // Sembunyikan tulisan (Ganti)
+    }
+}
+
+function saveName() {
+    const input = document.getElementById('username-input');
+    const name = input.value.trim();
+
+    if (name.length >= 2) {
+        localStorage.setItem('playerName', name);
+        checkUser();
+    } else {
+        alert("Masukkan nama minimal 2 karakter ya!");
+    }
+}
 
 // --- TAMBAHAN 1: LOGIKA TEMA (DARK MODE) ---
 function initTheme() {
@@ -75,11 +111,65 @@ function updateThemeButton(theme) {
 }
 // ------------------------------------------
 
+// --- 3. GLOBAL LEADERBOARD (SPREADSHEET) ---
+function saveToSpreadsheet(gameId, score) {
+    const playerName = localStorage.getItem('playerName') || 'Anonymous';
+    const data = { playerName, gameId, score };
+
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        mode: 'no-cors'
+    })
+    .then(() => console.log("Skor dikirim ke Spreadsheet!"))
+    .catch(err => console.error("Gagal kirim skor:", err));
+}
+
+async function showLeaderboard(gameId) {
+    const wrapper = document.getElementById('game-canvas-wrapper');
+    // Buat loading sederhana
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerHTML = "<p>Memuat Skor Global...</p>";
+    wrapper.appendChild(loadingDiv);
+
+    try {
+        const response = await fetch(SCRIPT_URL);
+        const allData = await response.json();
+        
+        // Filter data berdasarkan Game ID dan urutkan skor tertinggi
+        const gameScores = allData
+            .filter(d => d.gameId === gameId)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5); // Ambil Top 5 saja
+
+        let html = `
+            <div class="leaderboard-container">
+                <h4>🏆 Top 5 Global: ${gameId.toUpperCase()}</h4>
+                <table class="leaderboard-table">
+                    ${gameScores.map((s, i) => `
+                        <tr>
+                            <td>${i + 1}. ${s.name}</td>
+                            <td><b>${s.score}</b></td>
+                        </tr>
+                    `).join('')}
+                </table>
+            </div>
+        `;
+        
+        loadingDiv.remove();
+        wrapper.innerHTML += html;
+    } catch (err) {
+        loadingDiv.innerHTML = "<p>Gagal memuat skor global.</p>";
+        console.error(err);
+    }
+}
+
 /**
  * Inisialisasi Menu Utama
  */
 function initMenu() {
     initTheme();
+    checkUser();
     const grid = document.getElementById('menu-grid');
     if (!grid) return;
     grid.innerHTML = games.map(g => `

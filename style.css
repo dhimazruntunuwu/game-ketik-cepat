@@ -277,3 +277,132 @@ input[type="text"] {
     border: 2px solid var(--slate);
     /* ... sisa kode input kamu ... */
 }
+
+/* --- Tambahan untuk Fitur Nama & Header Profile --- */
+
+/* Membuat header flexbox agar judul di kiri dan profil di kanan */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Agar aman di HP layar kecil */
+    gap: 15px;
+    padding: 0 10px;
+    text-align: left; /* Timpa text-align: center bawaan */
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#user-display {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--prm);
+    background: var(--prm-light);
+    padding: 6px 15px;
+    border-radius: 50px;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Container Input Nama (Muncul di tengah menu) */
+#name-input-area {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 30px;
+    margin: 20px auto 40px;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    border: 2px solid var(--prm-light);
+    animation: fadeInDown 0.5s ease;
+}
+
+#name-input-area h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    color: var(--slate-dark);
+}
+
+#username-input {
+    width: 100%;
+    margin-bottom: 15px;
+    /* Input ini sudah mewarisi style input umum kamu yang anti-zoom */
+}
+
+#name-input-area button {
+    background: var(--prm);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 100%;
+}
+
+#name-input-area button:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+}
+
+/* Animasi simpel saat muncul */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Penyesuaian Mobile: Header judul tetap di tengah kalau layar sangat kecil */
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .header-right {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.leaderboard-container {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--prm-light);
+    border-radius: 15px;
+    border: 2px solid var(--prm);
+    color: var(--prm);
+    width: 100%;
+    max-width: 300px;
+    animation: fadeIn 0.5s ease;
+}
+
+.leaderboard-container h4 {
+    margin: 0 0 10px 0;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.leaderboard-table td {
+    padding: 5px 0;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+}
+
+.leaderboard-table tr:last-child td {
+    border: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

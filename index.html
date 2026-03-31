@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,13 +8,32 @@
     <link rel="icon" type="image/png" href="favicon-32x32.png">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <div id="main-menu">
             <header>
                 <h1>🎮 Fun Game Hub</h1>
-                <button id="theme-toggle" onclick="toggleTheme()">🌙 Mode Gelap</button>
+                <div class="header-right" style="display: flex; align-items: center; gap: 15px;">
+                    <div onclick="editName()" style="cursor: pointer; display: flex; align-items: center; gap: 5px;"
+                        title="Klik untuk ganti nama">
+                        <span id="user-display" style="font-weight: bold; color: var(--text-color);"></span>
+                        <small id="edit-label"
+                            style="font-size: 0.7rem; color: #3498db; text-decoration: underline; display: none;">(Ganti)</small>
+                    </div>
+                    <button id="theme-toggle" onclick="toggleTheme()">🌙 Mode Gelap</button>
+                </div>
             </header>
+
+            <div id="name-input-area"
+                style="text-align: center; margin: 20px 0; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 10px;">
+                <h2 style="margin-bottom: 10px; font-size: 1.1rem;">Halo! Siapa namamu?</h2>
+                <input type="text" id="username-input" placeholder="Ketik nama di sini..."
+                    style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 200px;">
+                <button onclick="saveName()"
+                    style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Mulai</button>
+            </div>
+
             <div class="game-grid" id="menu-grid"></div>
         </div>
 
@@ -64,7 +84,10 @@
     <script src="games/piano_hero.js"></script>
     <script src="games/math_quest.js"></script>
     <script src="games/math_story.js"></script>
+    <script src="games/gravity_switcher.js"></script>
+    <script src="games/light_reflector.js"></script>
 
     <script src="main.js"></script>
 </body>
+
 </html>
