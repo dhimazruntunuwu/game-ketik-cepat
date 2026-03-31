@@ -62,6 +62,7 @@ const games = [
 let timeLeft = 60;
 let timerInterval;
 let lastScrollPosition = 0;
+let gameLoop;
 
 // --- 1. LOGIKA USERNAME & PENYIMPANAN ---
 function checkUser() {
@@ -298,6 +299,15 @@ function launchGame(id) {
 function goHome() {
     // Hentikan timer agar tidak bocor ke game lain
     clearInterval(timerInterval);
+
+    // HENTIKAN GAME LOOP (Penting!)
+    if (gameLoop) {
+        cancelAnimationFrame(gameLoop);
+        clearInterval(gameLoop);
+    }
+    
+    // Hapus event listener keyboard agar tidak tabrakan
+    window.onkeydown = null;
     
     // Sembunyikan area game & tampilkan menu (Tanpa Refresh)
     document.getElementById('game-area').classList.add('hidden');
