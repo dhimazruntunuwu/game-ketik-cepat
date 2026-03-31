@@ -32,7 +32,7 @@ const games = [
     { id: 'tetris', name: 'Tetris Classic', icon: '🕹️', isZen: true, method: 'startTetrisGame' },
     { id: 'racer', name: 'Traffic Racer', icon: '🏎️', isZen: true, method: 'startRacerGame' },
     { id: 'knife', name: 'Knife Hit', icon: '🔪', isZen: true, method: 'startKnifeGame' },
-    { id: 'miner', name: 'Gold Miner', icon: '⛏️', isZen: false, method: 'startMinerGame' },
+    { id: 'miner', name: 'Gold Miner', icon: '⛏️', isZen: true, method: 'startMinerGame' },
     { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣', isZen: true, method: 'startMinesweeperGame' },
     { id: 'simon', name: 'Simon Says', icon: '🧠', isZen: true, method: 'startSimonGame' },
     { id: 'jigsaw', name: 'Jigsaw', icon: '🧩', isZen: true, method: 'startJigsawGame' },
