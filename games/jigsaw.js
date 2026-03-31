@@ -1,7 +1,7 @@
-window.startJigsawGame = function() {
+window.startJigsawGame = function () {
     const wrapper = document.getElementById('game-canvas-wrapper');
     const stats = document.getElementById('game-stats');
-    
+
     // 1. Setup UI
     wrapper.innerHTML = `
         <div style="text-align:center; user-select:none; font-family:sans-serif; padding:10px;">
@@ -25,18 +25,18 @@ window.startJigsawGame = function() {
     // 2. Konfigurasi 4x4
     const COLS = 4;
     const ROWS = 4;
-    const pieceW = cvs.width / COLS; 
+    const pieceW = cvs.width / COLS;
     const pieceH = cvs.height / ROWS;
-    
+
     let pieces = [];
-    let emptyIdx = (COLS * ROWS) - 1; 
+    let emptyIdx = (COLS * ROWS) - 1;
     let moves = 0;
     let isWin = false;
 
     // 3. Load Gambar
     const img = new Image();
-    img.src = 'images/sanrio.png'; 
-    
+    img.src = 'images/sanrio.png';
+
     img.onload = () => {
         initPuzzle();
         draw();
@@ -51,34 +51,34 @@ window.startJigsawGame = function() {
     function initPuzzle() {
         pieces = [];
         for (let i = 0; i < COLS * ROWS; i++) pieces.push(i);
-        
+
         // Acak menggunakan logika yang sama dengan user agar solvable
         for (let i = 0; i < 200; i++) {
             const dirs = ['up', 'down', 'left', 'right'];
             moveEmptySlot(dirs[Math.floor(Math.random() * 4)], true);
         }
-        moves = 0; 
+        moves = 0;
     }
 
     // 5. LOGIKA UTAMA: Menggerakkan Slot Kosong (Empty Slot)
     function moveEmptySlot(dir, isShuffle = false) {
-        if(isWin && !isShuffle) return;
+        if (isWin && !isShuffle) return;
         let targetIdx = -1;
-        
+
         // Klik ATAS -> Slot Kosong pindah ke ATAS (ambil kepingan di atasnya)
-        if(dir === 'up' && emptyIdx >= COLS) {
+        if (dir === 'up' && emptyIdx >= COLS) {
             targetIdx = emptyIdx - COLS;
         }
         // Klik BAWAH -> Slot Kosong pindah ke BAWAH (ambil kepingan di bawahnya)
-        else if(dir === 'down' && emptyIdx < COLS * (ROWS - 1)) {
+        else if (dir === 'down' && emptyIdx < COLS * (ROWS - 1)) {
             targetIdx = emptyIdx + COLS;
         }
         // Klik KIRI -> Slot Kosong pindah ke KIRI (ambil kepingan di kirinya)
-        else if(dir === 'left' && emptyIdx % COLS !== 0) {
+        else if (dir === 'left' && emptyIdx % COLS !== 0) {
             targetIdx = emptyIdx - 1;
         }
         // Klik KANAN -> Slot Kosong pindah ke KANAN (ambil kepingan di kanannya)
-        else if(dir === 'right' && (emptyIdx + 1) % COLS !== 0) {
+        else if (dir === 'right' && (emptyIdx + 1) % COLS !== 0) {
             targetIdx = emptyIdx + 1;
         }
 
@@ -86,8 +86,8 @@ window.startJigsawGame = function() {
             // Tukar posisi data
             [pieces[emptyIdx], pieces[targetIdx]] = [pieces[targetIdx], pieces[emptyIdx]];
             emptyIdx = targetIdx;
-            
-            if(!isShuffle) {
+
+            if (!isShuffle) {
                 moves++;
                 stats.innerText = `Gerakan: ${moves} | 🧩 Jigsaw 4x4`;
                 draw();
@@ -97,13 +97,25 @@ window.startJigsawGame = function() {
     }
 
     // 6. Deteksi Menang
+    // Di dalam file jigsaw.js (Fungsi checkWin)
     function checkWin() {
+        // Mengecek apakah semua kepingan sudah di posisi yang benar
         if (pieces.every((p, i) => p === i)) {
             isWin = true;
             draw();
+
+            // --- TAMBAHKAN LOGIKA INI ---
+            const finalMoves = moves; // Ambil jumlah gerakan terakhir
+
             setTimeout(() => {
-                alert(`💞 MANTAAP! 💞\nKotak kosong berhasil dipandu ke tujuan dalam ${moves} gerakan.`);
-                goHome();
+                alert(`💞 MANTAAP! 💞\nSelesai dalam ${finalMoves} gerakan.`);
+
+                // 1. Simpan skor ke Spreadsheet
+                // Gunakan ID 'jigsaw' sesuai dengan daftar di main.js
+                saveToSpreadsheet('jigsaw', finalMoves);
+
+                // 2. Tampilkan Leaderboard
+                showLeaderboard('jigsaw');
             }, 300);
         }
     }

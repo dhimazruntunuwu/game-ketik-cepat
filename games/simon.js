@@ -44,15 +44,25 @@ window.startSimonGame = function() {
         flashPad(idx);
         userSequence.push(idx);
         
-        if (userSequence[userSequence.length - 1] !== sequence[userSequence.length - 1]) {
-            alert("Salah Urutan! Game Over.");
-            goHome();
-            return;
-        }
+        // DETEKSI SALAH URUTAN (GAME OVER)
+    if (userSequence[userSequence.length - 1] !== sequence[userSequence.length - 1]) {
+        // Ambil level terakhir yang diselesaikan (level saat ini dikurangi 1 jika gagal di tengah jalan)
+        // Atau gunakan 'level' saja sebagai pencapaian tertinggi
+        const finalScore = level; 
 
-        if (userSequence.length === sequence.length) {
-            setTimeout(nextRound, 1000);
-        }
+        alert(`Salah Urutan! Game Over.\nSkor Kamu: Level ${finalScore}`);
+
+        // --- TAMBAHKAN LOGIKA INI ---
+        saveToSpreadsheet('simon', finalScore); // Kirim ke spreadsheet
+        showLeaderboard('simon');               // Tampilkan papan skor
+        
+        // goHome(); // Hapus atau pindahkan goHome ke dalam penutup leaderboard jika perlu
+        return;
+    }
+
+    if (userSequence.length === sequence.length) {
+        setTimeout(nextRound, 1000);
+    }
     };
 
     nextRound();
