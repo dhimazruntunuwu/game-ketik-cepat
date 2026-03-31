@@ -1,0 +1,263 @@
+/**
+ * Word Search Game - Clean Version (No Word List Below)
+ */
+
+const WS_GRID_SIZE = 12; 
+const WS_CELL_SIZE = 35; 
+const WS_WORDS = [
+    // --- KATA DASAR & UMUM ---
+    "MAKAN", "MINUM", "TIDUR", "LARI", "JALAN", "DUDUK", "BACA", "TULIS", "LIHAT", "DENGAR",
+    "SENYUM", "TAWA", "MAIN", "KERJA", "BELAJAR", "BANGUN", "MANDI", "MASAK", "SAPU", "BERSIH",
+    
+    // --- BENDA SEKITAR ---
+    "MEJA", "KURSI", "LEMARI", "PINTU", "JENDELA", "LAMPU", "KASUR", "BANTAL", "CERMIN", "SISIR",
+    "PIRING", "GELAS", "SENDOK", "GARPU", "WAJAN", "TIMBA", "PANCUR", "PAGAR", "ATAP", "LANTAI",
+    "BUKU", "PENSIL", "PENA", "KERTAS", "PENGGARIS", "TAS", "SEPATU", "KAOS", "CELANA", "TOPI",
+    "KOMPUTER", "PONSEL", "KABEL", "LAYAR", "MOUSE", "KAMERA", "RADIO", "TELEVISI", "KIPAS", "JAM",
+    
+    // --- HEWAN (FAUNA) ---
+    "AYAM", "BEBEK", "SAPI", "KAMBING", "KUDA", "GAJAH", "SINGA", "MACAN", "ZEBRA", "JERAPAH",
+    "KUCING", "ANJING", "KELINCI", "TIKUS", "BURUNG", "ELANG", "MERPATI", "BELETOK", "AYAM", "IKAN",
+    "PAUS", "HIU", "LUMBA", "PENYU", "KATAK", "ULAR", "BUAYA", "KOMODO", "LALAT", "NYAMUK",
+    "LEBAH", "SEMUT", "LABALABA", "KUPUKUPU", "CAPUNG", "BELALANG", "ULAT", "CACING", "GURITA", "KEPITING",
+    
+    // --- BUAH & TUMBUHAN ---
+    "APEL", "JERUK", "MANGGA", "PISANG", "ANGGUR", "MELON", "SEMANGKA", "NANAS", "DURIAN", "RAMBUTAN",
+    "SALAK", "SAWO", "JAMBU", "PEPAYA", "MANGGIS", "KELAPA", "ALPUKAT", "STRAWBERI", "CERI", "KURMA",
+    "MAWAR", "MELATI", "ANGGREK", "POHON", "DAUN", "AKAR", "BATANG", "BUNGA", "RUMPUT", "BAMBU",
+    
+    // --- ANGGOTA TUBUH ---
+    "KEPALA", "RAMBUT", "MATA", "HIDUNG", "MULUT", "TELINGA", "LEHER", "BAHU", "TANGAN", "JARI",
+    "DADA", "PERUT", "PUNGGUNG", "PINGGANG", "PAHA", "LUTUT", "KAKI", "TUMIT", "LIDAH", "GIGI",
+    
+    // --- PROFESI ---
+    "GURU", "DOSEN", "DOKTER", "PERAWAT", "PILOT", "POLISI", "TENTARA", "PETANI", "NELAYAN", "SOPIR",
+    "KOKI", "PELAYAN", "ATLET", "PENYANYI", "PENARI", "PELUKIS", "PENULIS", "ARTIS", "MASINIS", "NAKHODA",
+    
+    // --- ALAM & CUACA ---
+    "MATAHARI", "BULAN", "BINTANG", "LANGIT", "AWAN", "HUJAN", "ANGIN", "PETIR", "PELANGI", "GUNUNG",
+    "LAUT", "SUNGAI", "DANAU", "PANTAI", "HUTAN", "LEMBAH", "GUA", "PASIR", "BATU", "TANAH",
+    
+    // --- KENDARAAN ---
+    "MOBIL", "MOTOR", "SEPEDA", "BUS", "TRUK", "KERETA", "PESAWAT", "KAPAL", "PERAHU", "BECAK",
+    
+    // --- WARNA ---
+    "MERAH", "BIRU", "KUNING", "HIJAU", "HITAM", "PUTIH", "COKELAT", "UNGU", "ORANYE", "ABUABU",
+    
+    // --- TEMPAT & BANGUNAN ---
+    "RUMAH", "KANTOR", "SEKOLAH", "PASAR", "TOKO", "MASJID", "GEREJA", "PURA", "VIHARA", "HOTEL",
+    "TAMAN", "HUTAN", "SAWAH", "KEBUN", "DAPUR", "KAMAR", "KAMPUS", "APOTEK", "GUDANG", "MUSEUM",
+    
+    // --- KOTA DI INDONESIA ---
+    "JAKARTA", "SURABAYA", "BANDUNG", "MEDAN", "SEMARANG", "MAKASSAR", "PALEMBANG", "MALANG", "BALI", "JOGJA",
+    "SOLO", "BOGOR", "BEKASI", "DEPOK", "TANGERANG", "BALIKPAPAN", "SAMARINDA", "PONTIANAK", "MANADO", "AMBON",
+    
+    // --- KATA SIFAT ---
+    "BESAR", "KECIL", "TINGGI", "PENDEK", "PANJANG", "LEBAR", "SEMPIT", "BERSIH", "KOTOR", "WANGI",
+    "BAU", "CEPAT", "LAMBAT", "KUAT", "LEMAH", "PINTAR", "BODOH", "RAJIN", "MALAS", "BERANI",
+    "TAKUT", "SENANG", "SEDIH", "MARAH", "MALU", "LUCU", "KERAS", "LEMBUT", "PANAS", "DINGIN",
+    "MANIS", "ASIN", "PAHIT", "ASAM", "PEDAS", "MURAH", "MAHAL", "KAYA", "MISKIN", "MUDA",
+    
+    // --- KATA TAMBAHAN (ACAK UMUM) ---
+    "DUNIA", "NEGARA", "BANGSA", "RAKYAT", "HUKUM", "ADIL", "DAMAI", "MERDEKA", "SEJARAH", "BUDAYA",
+    "BAHASA", "ILMU", "SENI", "MUSIK", "LAGU", "PUISI", "CERITA", "BERITA", "KABAR", "PESAN",
+    "WAKTU", "DETIK", "MENIT", "JAM", "HARI", "MINGGU", "BULAN", "TAHUN", "PAGI", "SIANG",
+    "SORE", "MALAM", "KEMARIN", "BESOK", "LUSA", "DULU", "NANTI", "PERNAH", "SELALU", "JARANG",
+    "MUNGKIN", "PASTI", "HARUS", "BISA", "BOLEH", "SAMA", "BEDA", "BARU", "LAMA", "TUA",
+    "HIDUP", "MATI", "SEHAT", "SAKIT", "LAPAR", "HAUS", "KENYANG", "LULUS", "GAGAL", "MENANG",
+    "KALAH", "HADIAH", "JUARA", "NOMOR", "ANGKA", "HURUF", "TANDA", "RUANG", "JARAK", "BERAT",
+    "RINGAN", "MUDAH", "SULIT", "GAMPANG", "SUSAH", "PENTING", "BAHAYA", "AMAN", "TENANG", "RAMAI",
+    "SEPI", " INDAH", "JELEK", "BAGUS", "NYAMAN", "TEPAT", "COCOK", "SALAH", "BENAR", "JUJUR",
+    
+    // --- KATEGORI DAPUR & MAKANAN ---
+    "NASI", "ROTI", "SOTO", "SATE", "BAKSO", "MIE", "TELUR", "TEMPE", "TAHU", "GULAI",
+    "SAYUR", "GARAM", "GULA", "KOPI", "TEH", "SUSU", "MADU", "SIRUP", "COKELAT", "MENTEGA",
+    "KEJU", "MINYAK", "SANTAN", "CABAI", "BAWANG", "JAHE", "KUNYIT", "MERICA", "KECAP", "SAUS",
+
+    // --- TEKNOLOGI & INTERNET ---
+    "DATA", "SISTEM", "SINYAL", "WEBSITE", "APLIKASI", "SANDI", "AKUN", "PROFIL", "FOTO", "VIDEO",
+    "SUARA", "TEKS", "FILE", "FOLDER", "MEMORI", "BATERAI", "LISTRIK", "MESIN", "ALAT", "ROBOT",
+
+    // --- OLAHRAGA & HOBI ---
+    "BOLA", "RENANG", "SENAM", "SILAT", "CATUR", "LARI", "GOLF", "TENIS", "MUSIK", "PIANO",
+    "GITAR", "BIOLA", "SULING", "DRUM", "DANGDUT", "POKER", "SULAP", "PIKNIK", "KEMAH", "DAKI"
+];
+
+let ws_grid = [];
+let ws_foundWords = [];
+let ws_current_words = []; // Kata yang terpilih untuk ronde ini
+let isDragging = false;
+let startCell = null;
+let currentCell = null;
+let ws_canvas, ws_ctx;
+
+function startWordSearchGame() {
+    const wrapper = document.getElementById('game-canvas-wrapper');
+    const width = WS_GRID_SIZE * WS_CELL_SIZE;
+    const height = WS_GRID_SIZE * WS_CELL_SIZE;
+
+    // Menghapus div ws-word-list dari innerHTML
+    wrapper.innerHTML = `
+        <div style="text-align:center; padding: 20px;">
+            <canvas id="ws-canvas" width="${width}" height="${height}" 
+                style="border:4px solid #2c3e50; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor:crosshair;">
+            </canvas>
+            <p style="color: #7f8c8d; font-family: sans-serif; margin-top: 10px;">Cari kata tersembunyi dengan cara drag huruf!</p>
+        </div>
+    `;
+
+    ws_canvas = document.getElementById('ws-canvas');
+    ws_ctx = ws_canvas.getContext('2d');
+
+    setupGrid();
+    drawGrid();
+
+    ws_canvas.addEventListener('mousedown', ws_onStart);
+    ws_canvas.addEventListener('mousemove', ws_onMove);
+    window.addEventListener('mouseup', ws_onEnd);
+
+    ws_canvas.addEventListener('touchstart', (e) => ws_onStart(e.touches[0]), {passive: false});
+    ws_canvas.addEventListener('touchmove', (e) => { e.preventDefault(); ws_onMove(e.touches[0]); }, {passive: false});
+    window.addEventListener('touchend', ws_onEnd);
+}
+
+function setupGrid() {
+    ws_grid = Array.from({ length: WS_GRID_SIZE }, () => Array(WS_GRID_SIZE).fill(''));
+    ws_foundWords = [];
+
+    // Ambil 12 kata acak saja agar tidak infinite loop
+    ws_current_words = WS_WORDS
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 12);
+
+    ws_current_words.forEach(word => {
+        let placed = false;
+        let attempts = 0;
+        while (!placed && attempts < 50) {
+            const direction = Math.random() > 0.5 ? 'H' : 'V';
+            const row = Math.floor(Math.random() * WS_GRID_SIZE);
+            const col = Math.floor(Math.random() * WS_GRID_SIZE);
+
+            if (canPlaceWord(word, row, col, direction)) {
+                for (let i = 0; i < word.length; i++) {
+                    if (direction === 'H') ws_grid[row][col + i] = word[i];
+                    else ws_grid[row + i][col] = word[i];
+                }
+                placed = true;
+            }
+            attempts++;
+        }
+    });
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let r = 0; r < WS_GRID_SIZE; r++) {
+        for (let c = 0; c < WS_GRID_SIZE; c++) {
+            if (ws_grid[r][c] === '') {
+                ws_grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+            }
+        }
+    }
+}
+
+function canPlaceWord(word, r, c, dir) {
+    if (dir === 'H' && c + word.length > WS_GRID_SIZE) return false;
+    if (dir === 'V' && r + word.length > WS_GRID_SIZE) return false;
+    for (let i = 0; i < word.length; i++) {
+        const char = dir === 'H' ? ws_grid[r][c + i] : ws_grid[r + i][c];
+        if (char !== '' && char !== word[i]) return false;
+    }
+    return true;
+}
+
+function ws_onStart(e) {
+    isDragging = true;
+    const rect = ws_canvas.getBoundingClientRect();
+    startCell = {
+        x: Math.floor((e.clientX - rect.left) / WS_CELL_SIZE),
+        y: Math.floor((e.clientY - rect.top) / WS_CELL_SIZE)
+    };
+    currentCell = startCell;
+}
+
+function ws_onMove(e) {
+    if (!isDragging) return;
+    const rect = ws_canvas.getBoundingClientRect();
+    const pos = {
+        x: Math.floor((e.clientX - rect.left) / WS_CELL_SIZE),
+        y: Math.floor((e.clientY - rect.top) / WS_CELL_SIZE)
+    };
+    
+    if (pos.x >= 0 && pos.x < WS_GRID_SIZE && pos.y >= 0 && pos.y < WS_GRID_SIZE) {
+        currentCell = pos;
+        drawGrid();
+        // Gambar garis seleksi saat drag
+        drawSelectionLine(startCell, currentCell, "rgba(52, 152, 219, 0.4)"); 
+    }
+}
+
+function ws_onEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+
+    const selected = getSelectedText(startCell, currentCell);
+    const reversed = selected.split('').reverse().join('');
+
+    // Cek apakah kata normal atau terbalik ada di daftar
+    if (ws_current_words.includes(selected) || ws_current_words.includes(reversed)) {
+        const wordFound = ws_current_words.includes(selected) ? selected : reversed;
+        if (!ws_foundWords.includes(wordFound)) {
+            ws_foundWords.push(wordFound);
+            alert("Bagus! Kamu menemukan kata: " + wordFound);
+        }
+    }
+
+    drawGrid();
+    if (ws_foundWords.length === ws_current_words.length) {
+        setTimeout(() => alert("Luar biasa! Semua kata telah ditemukan!"), 200);
+    }
+}
+
+function getSelectedText(s, e) {
+    let text = "";
+    // Hanya mendukung Horizontal atau Vertikal murni
+    if (s.y === e.y) {
+        const min = Math.min(s.x, e.x), max = Math.max(s.x, e.x);
+        for (let i = min; i <= max; i++) text += ws_grid[s.y][i];
+    } else if (s.x === e.x) {
+        const min = Math.min(s.y, e.y), max = Math.max(s.y, e.y);
+        for (let i = min; i <= max; i++) text += ws_grid[i][s.x];
+    }
+    return text;
+}
+
+function drawGrid() {
+    ws_ctx.clearRect(0, 0, ws_canvas.width, ws_canvas.height);
+    
+    // Background Grid
+    ws_ctx.fillStyle = "#ecf0f1";
+    ws_ctx.fillRect(0,0, ws_canvas.width, ws_canvas.height);
+
+    ws_ctx.textAlign = "center";
+    ws_ctx.textBaseline = "middle";
+    ws_ctx.font = "bold 16px 'Segoe UI', Arial";
+
+    for (let r = 0; r < WS_GRID_SIZE; r++) {
+        for (let c = 0; c < WS_GRID_SIZE; c++) {
+            const x = c * WS_CELL_SIZE + WS_CELL_SIZE / 2;
+            const y = r * WS_CELL_SIZE + WS_CELL_SIZE / 2;
+            
+            ws_ctx.fillStyle = "#2c3e50";
+            ws_ctx.fillText(ws_grid[r][c], x, y);
+        }
+    }
+}
+
+function drawSelectionLine(s, e, color) {
+    ws_ctx.beginPath();
+    ws_ctx.lineWidth = WS_CELL_SIZE * 0.7;
+    ws_ctx.lineCap = "round";
+    ws_ctx.strokeStyle = color;
+    ws_ctx.moveTo(s.x * WS_CELL_SIZE + WS_CELL_SIZE/2, s.y * WS_CELL_SIZE + WS_CELL_SIZE/2);
+    ws_ctx.lineTo(e.x * WS_CELL_SIZE + WS_CELL_SIZE/2, e.y * WS_CELL_SIZE + WS_CELL_SIZE/2);
+    ws_ctx.stroke();
+}

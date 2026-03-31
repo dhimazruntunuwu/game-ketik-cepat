@@ -51,6 +51,8 @@ const games = [
     { id: 'math_story', name: 'Math Story', icon: '📚', isZen: true, method: 'startMathStory' },
     { id: 'gravity', name: 'Gravity Flip', icon: '🌌', isZen: true, method: 'startGravityGame' },
     { id: 'light_reflector', name: 'Laser Mirror', icon: '🔦', isZen: true, method: 'startLightReflector' },
+    { id: 'word', name: 'Word Search', icon: '🗺️', isZen: true, method: 'startWordSearchGame' },
+    { id: 'pong', name: 'Pong Remake', icon: '🎾', isZen: true, method: 'startPongGame' },
 ];
 
 let timeLeft = 60;

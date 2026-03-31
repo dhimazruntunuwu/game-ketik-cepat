@@ -462,3 +462,83 @@ header {
 .modal-content button:hover { background: #2980b9; }
 
 .hidden { display: none !important; }
+
+/* --- CSS Khusus Word Search Game --- */
+#ws-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+#ws-target-word {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-color, #333);
+}
+
+#ws-word-text {
+    background-color: #f1c40f; /* Kuning cerah */
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #2c3e50;
+}
+
+.ws-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10 Kolom */
+    gap: 2px;
+    background-color: var(--card-bg, #eee);
+    padding: 5px;
+    border-radius: 8px;
+    user-select: none; /* Cegah teks terblok */
+    -webkit-user-select: none;
+    touch-action: none; /* Penting untuk TouchMove */
+}
+
+.ws-cell {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--body-bg, #fff);
+    border: 1px solid #ccc;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+/* Responsif untuk Mobile */
+@media (max-width: 480px) {
+    .ws-cell {
+        width: 25px;
+        height: 25px;
+        font-size: 0.9rem;
+    }
+}
+
+.ws-cell.selected {
+    background-color: #3498db !important; /* Biru seleksi */
+    color: #fff;
+    border-color: #2980b9;
+}
+
+.ws-cell.found {
+    background-color: #2ecc71 !important; /* Hijau ditemukan */
+    color: #fff;
+    border-color: #27ae60;
+}
+
+/* --- CSS Khusus Pong Game --- */
+#pong-canvas {
+    border: 4px solid var(--text-color, #333);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    cursor: none; /* Sembunyikan kursor di dalam canvas */
+    max-width: 100%; /* Agar muat di layar mobile */
+    height: auto;
+}
