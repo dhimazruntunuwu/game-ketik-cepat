@@ -57,6 +57,7 @@ const games = [
     { id: 'othello', name: 'Othello', icon: '🌗', isZen: true, method: 'startOthello' },
     { id: 'light_sout', name: 'Lights Out', icon: '💡', isZen: true, method: 'startLightSout' },
     { id: 'sokoban', name: 'Sokoban', icon: '📦', isZen: true, method: 'startSokoban' },
+    { id: 'tower_builder', name: 'Tower Stack', icon: '🏢', isZen: true, method: 'startTowerGame' },
 ];
 
 let timeLeft = 60;
