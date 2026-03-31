@@ -56,6 +56,7 @@ const games = [
     { id: 'go', name: 'Go Game', icon: '⚪', isZen: true, method: 'startGoGame' }, 
     { id: 'othello', name: 'Othello', icon: '🌗', isZen: true, method: 'startOthello' },
     { id: 'light_sout', name: 'Lights Out', icon: '💡', isZen: true, method: 'startLightSout' },
+    { id: 'sokoban', name: 'Sokoban', icon: '📦', isZen: true, method: 'startSokoban' },
 ];
 
 let timeLeft = 60;
