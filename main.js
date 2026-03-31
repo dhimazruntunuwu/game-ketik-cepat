@@ -53,10 +53,14 @@ const games = [
     { id: 'light_reflector', name: 'Laser Mirror', icon: '🔦', isZen: true, method: 'startLightReflector' },
     { id: 'word', name: 'Word Search', icon: '🗺️', isZen: true, method: 'startWordSearchGame' },
     { id: 'pong', name: 'Pong Remake', icon: '🎾', isZen: true, method: 'startPongGame' },
+    { id: 'go', name: 'Go Game', icon: '⚪', isZen: true, method: 'startGoGame' }, 
+    { id: 'othello', name: 'Othello', icon: '🌗', isZen: true, method: 'startOthello' },
+    { id: 'light_sout', name: 'Lights Out', icon: '💡', isZen: true, method: 'startLightSout' },
 ];
 
 let timeLeft = 60;
 let timerInterval;
+let lastScrollPosition = 0;
 
 // --- 1. LOGIKA USERNAME & PENYIMPANAN ---
 function checkUser() {
@@ -259,6 +263,9 @@ function launchGame(id) {
     const game = games.find(g => g.id === id);
     if (!game) return console.error("Game tidak ditemukan!");
 
+    // --- SIMPAN POSISI SCROLL SEBELUM PINDAH ---
+    lastScrollPosition = window.scrollY;
+
     // UI Transition
     document.getElementById('main-menu').classList.add('hidden');
     document.getElementById('game-area').classList.remove('hidden');
@@ -301,6 +308,15 @@ function goHome() {
     
     // Reset skor tampilan
     document.getElementById('game-stats').innerText = "Skor: 0";
+    
+    // --- KEMBALIKAN POSISI SCROLL ---
+    // Gunakan setTimeout agar browser selesai merender menu sebelum scroll dijalankan
+    setTimeout(() => {
+        window.scrollTo({
+            top: lastScrollPosition,
+            behavior: 'instant' // Gunakan 'smooth' jika ingin efek animasi scroll
+        });
+    }, 10);
 }
 
 window.onload = initMenu;
