@@ -3,14 +3,13 @@
 */
 
 :root { 
-    --prm: #2563eb;       /* Biru Utama */
-    --prm-light: #dbeafe; /* Biru Muda */
-    --bg: #f8fafc;        /* Background Dasar */
+    --prm: #2563eb;
+    --prm-light: #dbeafe;
+    --bg: #f8fafc;
     --white: #ffffff; 
-    --slate: #64748b;     /* Warna Teks Sekunder */
-    --slate-dark: #1e293b;/* Warna Teks Utama */
-    --danger: #ef4444; 
-    --success: #22c55e;
+    --slate: #64748b;
+    --slate-dark: #1e293b;
+    --modal-border: #3498db; /* Warna border modal */
 }
 
 /* Reset & Anti-Zoom */
@@ -215,13 +214,13 @@ canvas {
 
 /* 1. Tambahkan Variabel Warna Dark Mode di bagian atas */
 [data-theme="dark"] {
-    --bg: #0f172a;           /* Background gelap (Slate 900) */
-    --card-bg: #1e293b;      /* Background kartu (Slate 800) */
-    --white: #1e293b;        /* Pengganti warna putih */
-    --slate-dark: #f1f5f9;   /* Teks utama jadi terang */
-    --slate: #94a3b8;        /* Teks sekunder */
-    --prm-light: #1e3a8a;    /* Biru gelap untuk stats */
-    --prm: #60a5fa;          /* Biru terang untuk aksen */
+    --bg: #0f172a;
+    --white: #1e293b; /* Ini akan jadi background modal di mode gelap */
+    --slate-dark: #f1f5f9;
+    --slate: #94a3b8;
+    --prm-light: #1e3a8a;
+    --prm: #60a5fa;
+    --modal-border: #60a5fa; /* Border modal jadi biru terang di dark mode */
 }
 
 /* 2. Pastikan body mendukung transisi warna yang halus */
@@ -406,3 +405,60 @@ header {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Styling Modal Popup */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Background gelap transparan */
+    backdrop-filter: blur(5px); /* Efek blur di belakang popup */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background: var(--bg-color, white); /* Mengikuti tema dark/light */
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 350px;
+    border: 2px solid #3498db;
+}
+
+.modal-content h2 { margin-bottom: 10px; }
+.modal-content p { color: #64748b; margin-bottom: 20px; }
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #cbd5e1;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-align: center;
+    outline: none;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal-content button:hover { background: #2980b9; }
+
+.hidden { display: none !important; }

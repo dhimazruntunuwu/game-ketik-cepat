@@ -10,31 +10,32 @@
 </head>
 
 <body>
+    <div id="name-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>👋 Halo Gamer!</h2>
+            <p>Masukkan namamu untuk mencatat skor di Leaderboard.</p>
+            <input type="text" id="username-input" placeholder="Nama kamu..." maxlength="15" autocomplete="off">
+            <button onclick="saveName()">Mulai Bermain</button>
+        </div>
+    </div>
+
     <div class="container">
         <div id="main-menu">
             <header>
-                <h1>🎮 Fun Game Hub</h1>
+                <div class="header-left">
+                    <h1>🎮 Fun Game Hub</h1>
+                </div>
                 <div class="header-right" style="display: flex; align-items: center; gap: 15px;">
-                    <div onclick="editName()" style="cursor: pointer; display: flex; align-items: center; gap: 5px;"
-                        title="Klik untuk ganti nama">
-                        <span id="user-display" style="font-weight: bold; color: var(--text-color);"></span>
-                        <small id="edit-label"
-                            style="font-size: 0.7rem; color: #3498db; text-decoration: underline; display: none;">(Ganti)</small>
+                    <div onclick="editName()" style="cursor: pointer; text-align: right;">
+                        <span id="user-display" style="font-weight: bold; display: block;"></span>
+                        <small id="edit-label" style="color: #3498db; text-decoration: underline; font-size: 0.75rem;">(Ganti Nama)</small>
                     </div>
                     <button id="theme-toggle" onclick="toggleTheme()">🌙 Mode Gelap</button>
                 </div>
             </header>
 
-            <div id="name-input-area"
-                style="text-align: center; margin: 20px 0; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 10px;">
-                <h2 style="margin-bottom: 10px; font-size: 1.1rem;">Halo! Siapa namamu?</h2>
-                <input type="text" id="username-input" placeholder="Ketik nama di sini..."
-                    style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 200px;">
-                <button onclick="saveName()"
-                    style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Mulai</button>
-            </div>
-
-            <div class="game-grid" id="menu-grid"></div>
+            <div class="game-grid" id="menu-grid">
+                </div>
         </div>
 
         <div id="game-area" class="hidden">
@@ -42,7 +43,8 @@
                 <button class="btn-back" onclick="goHome()">⬅ Menu Utama</button>
                 <div id="game-stats">Skor: 0</div>
             </div>
-            <div id="game-canvas-wrapper"></div>
+            <div id="game-canvas-wrapper">
+                </div>
         </div>
     </div>
 
@@ -88,6 +90,12 @@
     <script src="games/light_reflector.js"></script>
 
     <script src="main.js"></script>
+    
+    <script>
+        // Trigger save saat tekan Enter di input nama
+        document.getElementById('username-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') saveName();
+        });
+    </script>
 </body>
-
 </html>

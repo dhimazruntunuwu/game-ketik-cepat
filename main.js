@@ -60,17 +60,66 @@ let timerInterval;
 function checkUser() {
     const savedName = localStorage.getItem('playerName');
     const userDisplay = document.getElementById('user-display');
-    const inputArea = document.getElementById('name-input-area');
-    const editLabel = document.getElementById('edit-label'); // Ambil label ganti
+    const modal = document.getElementById('name-modal');
+    const editLabel = document.getElementById('edit-label');
 
     if (savedName) {
         userDisplay.innerText = `👤 ${savedName}`;
-        inputArea.style.display = 'none'; 
-        if (editLabel) editLabel.style.display = 'inline'; // Tampilkan tulisan (Ganti)
+        modal.classList.add('hidden'); // Sembunyikan modal jika nama sudah ada
+        if (editLabel) editLabel.style.display = 'inline';
     } else {
         userDisplay.innerText = '';
-        inputArea.style.display = 'block'; 
-        if (editLabel) editLabel.style.display = 'none'; // Sembunyikan tulisan (Ganti)
+        modal.classList.remove('hidden'); // Tampilkan modal jika nama kosong
+        if (editLabel) editLabel.style.display = 'none';
+        
+        // Fokuskan ke input secara otomatis
+        setTimeout(() => {
+            document.getElementById('username-input').focus();
+        }, 100);
+    }
+}
+
+// Tambahkan trigger Enter pada input agar lebih user-friendly
+document.getElementById('username-input')?.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        saveName();
+    }
+});
+
+function editName() {
+    // 1. Tampilkan modal kembali
+    const modal = document.getElementById('name-modal');
+    const input = document.getElementById('username-input');
+    const savedName = localStorage.getItem('playerName');
+
+    if (modal) {
+        modal.classList.remove('hidden');
+        
+        // 2. Isi input dengan nama lama agar user tinggal ubah sedikit jika mau
+        if (input && savedName) {
+            input.value = savedName;
+            input.focus();
+            input.select(); // Otomatis blok teks agar mudah diganti
+        }
+    }
+}
+
+function saveName() {
+    const input = document.getElementById('username-input');
+    const name = input.value.trim();
+
+    if (name.length >= 2) {
+        // 1. Simpan nama baru
+        localStorage.setItem('playerName', name);
+        
+        // 2. Sembunyikan modal
+        const modal = document.getElementById('name-modal');
+        if (modal) modal.classList.add('hidden');
+        
+        // 3. Update tampilan nama di header
+        checkUser();
+    } else {
+        alert("Masukkan nama minimal 2 karakter ya!");
     }
 }
 
