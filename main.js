@@ -8,7 +8,7 @@
  */
 
 // URL Web App dari Google Apps Script (Ganti dengan URL milikmu)
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVoVPNOf_aGlgDvj7VlUHS65-FYe896rwt0alTEYoPD9idL_j5PM8szBhlOzr9Ws76/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlEVSF1BLQiSc33ydKP6uzDREyhtcLBx5FLrIcwPBowRUzlRjXlxxdyVQpmUmXIYfV/exec";
 
 const games = [
     { id: 'typing', name: 'Ketik Cepat', icon: '⌨️', isZen: false, method: 'startTypingGame' },
@@ -25,7 +25,7 @@ const games = [
     { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️', isZen: false, method: 'startMultiplicationGame' },
     { id: 'math_div', name: 'Bagi-Bagian', icon: '➗', isZen: false, method: 'startDivisionGame' },
     { id: 'drawing', name: 'Menggambar', icon: '🎨', isZen: true, method: 'startDrawingGame' },
-    { id: 'flappy', name: 'Flappy Box', icon: '🐦', isZen: false, method: 'startFlappyGame' },
+    { id: 'flappy', name: 'Flappy Box', icon: '🐦', isZen: true, method: 'startFlappyGame' },
     { id: '2048', name: '2048 Lite', icon: '🔢', isZen: false, method: 'start2048Game' },
     { id: 'stack', name: 'Tower Stack', icon: '🏗️', isZen: false, method: 'startStackGame' },
     { id: 'bricks', name: 'Brick Breaker', icon: '🧱', isZen: true, method: 'startBricksGame' },
@@ -185,40 +185,41 @@ function saveToSpreadsheet(gameId, score) {
 
 async function showLeaderboard(gameId) {
     const wrapper = document.getElementById('game-canvas-wrapper');
-    // Buat loading sederhana
     const loadingDiv = document.createElement('div');
-    loadingDiv.innerHTML = "<p>Memuat Skor Global...</p>";
+    loadingDiv.id = "leaderboard-loading";
+    loadingDiv.innerHTML = "<p>⌛ Mengambil peringkat...</p>";
     wrapper.appendChild(loadingDiv);
 
     try {
-        const response = await fetch(SCRIPT_URL);
+        const response = await fetch(SCRIPT_URL + "?t=" + Date.now());
         const allData = await response.json();
         
-        // Filter data berdasarkan Game ID dan urutkan skor tertinggi
+        console.log("Data dari Server:", allData); // Cek di Console F12 apakah data muncul
+
+        // Gunakan toLowerCase() agar filter tidak sensitif huruf besar/kecil
         const gameScores = allData
-            .filter(d => d.gameId === gameId)
+            .filter(d => String(d.gameId).toLowerCase() === String(gameId).toLowerCase())
             .sort((a, b) => b.score - a.score)
-            .slice(0, 5); // Ambil Top 5 saja
+            .slice(0, 5);
 
         let html = `
             <div class="leaderboard-container">
                 <h4>🏆 Top 5 Global: ${gameId.toUpperCase()}</h4>
-                <table class="leaderboard-table">
-                    ${gameScores.map((s, i) => `
+                <table border="1" style="width:100%; border-collapse: collapse;">
+                    ${gameScores.length > 0 ? gameScores.map((s, i) => `
                         <tr>
                             <td>${i + 1}. ${s.name}</td>
                             <td><b>${s.score}</b></td>
                         </tr>
-                    `).join('')}
+                    `).join('') : '<tr><td>Belum ada skor untuk game ini.</td></tr>'}
                 </table>
             </div>
         `;
         
-        loadingDiv.remove();
-        wrapper.innerHTML += html;
+        document.getElementById('leaderboard-loading')?.remove();
+        wrapper.insertAdjacentHTML('beforeend', html);
     } catch (err) {
-        loadingDiv.innerHTML = "<p>Gagal memuat skor global.</p>";
-        console.error(err);
+        document.getElementById('leaderboard-loading').innerHTML = "<p>Gagal memuat skor.</p>";
     }
 }
 
