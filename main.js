@@ -8,7 +8,7 @@
  */
 
 // URL Web App dari Google Apps Script (Ganti dengan URL milikmu)
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlEVSF1BLQiSc33ydKP6uzDREyhtcLBx5FLrIcwPBowRUzlRjXlxxdyVQpmUmXIYfV/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby96nWUkoD0lMp0BU9PugQhAGJ38ZK0ZCd4N36ftjJsYTl1JUGeUcquNHLBH7F2hu5N/exec";
 
 const games = [
     { id: 'typing', name: 'Ketik Cepat', icon: '⌨️', isZen: false, method: 'startTypingGame' },
@@ -168,6 +168,49 @@ function updateThemeButton(theme) {
     }
 }
 // ------------------------------------------
+
+// --- 3. LOGIKA KOTAK SARAN ---
+function submitSaran() {
+    const input = document.getElementById('suggestion-input');
+    const btn = document.getElementById('send-suggestion-btn');
+    const saranText = input.value.trim();
+    
+    // Ambil nama dari localStorage sesuai dengan fungsi saveName() Anda
+    const playerName = localStorage.getItem('playerName') || 'Anonymous';
+
+    if (!saranText) {
+        alert("Sarannya diisi dulu ya!");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Mengirim...";
+
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", // Penting untuk Google Apps Script
+        headers: {
+            "Content-Type": "text/plain", // Gunakan text/plain untuk menghindari preflight CORS
+        },
+        body: JSON.stringify({
+            playerName: playerName,
+            gameId: "KOTAK_SARAN", // Ini kunci agar masuk ke Sheet "Saran"
+            score: saranText       // Teks saran dikirim sebagai 'score'
+        })
+    })
+    .then(() => {
+        alert("Terima kasih sudah memberi saran! 💞");
+        input.value = "";
+    })
+    .catch(err => {
+        console.error("Gagal kirim saran:", err);
+        alert("Gagal mengirim saran.");
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerText = "Kirim Saran";
+    });
+}
 
 // --- 3. GLOBAL LEADERBOARD (SPREADSHEET) ---
 function saveToSpreadsheet(gameId, score) {

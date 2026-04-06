@@ -223,6 +223,22 @@ canvas {
     --modal-border: #60a5fa; /* Border modal jadi biru terang di dark mode */
 }
 
+[data-theme="dark"] #suggestion-input, 
+[data-theme="dark"] .suggestion-container,
+[data-theme="dark"] .modal-content {
+    background-color: var(--white); /* Menggunakan biru gelap dari variabel */
+    color: var(--slate-dark);       /* Teks jadi putih/terang */
+    border-color: var(--prm);       /* Border tetap biru tapi menyesuaikan theme */
+}
+
+[data-theme="dark"] #suggestion-input {
+    border: 1px solid var(--slate);
+}
+
+[data-theme="dark"] #suggestion-input::placeholder {
+    color: var(--slate); /* Agar tulisan "Tulis saranmu..." tidak hilang tapi redup */
+}
+
 /* 2. Pastikan body mendukung transisi warna yang halus */
 body { 
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
@@ -541,4 +557,65 @@ header {
     cursor: none; /* Sembunyikan kursor di dalam canvas */
     max-width: 100%; /* Agar muat di layar mobile */
     height: auto;
+}
+
+.suggestion-container {
+    margin: 40px auto;
+    padding: 20px;
+    background: var(--card-bg, #ffffff);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 500px;
+    text-align: center;
+    border: 2px solid #3498db;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Tambahkan ini */
+}
+
+.suggestion-container h3 {
+    margin-top: 0;
+    color: var(--text-color, #2c3e50);
+}
+
+.suggestion-container p {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 15px;
+}
+
+#suggestion-input {
+    width: 100%;
+    height: 100px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    resize: none;
+    font-family: inherit;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    outline: none;
+}
+
+#suggestion-input:focus {
+    border-color: #3498db;
+}
+
+#send-suggestion-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+
+#send-suggestion-btn:hover {
+    background: #059669;
+}
+
+#send-suggestion-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
 }

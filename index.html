@@ -37,17 +37,22 @@
                 </div>
             </header>
 
-            <div class="game-grid" id="menu-grid">
+            <div class="game-grid" id="menu-grid"></div>
+
+            <div id="suggestion-box" class="suggestion-container">
+                <h3>📝 Kotak Saran</h3>
+                <p>Punya ide game baru atau kritik? Tulis di bawah ya!</p>
+                <textarea id="suggestion-input" placeholder="Tulis saranmu di sini..."></textarea>
+                <button id="send-suggestion-btn" onclick="submitSaran()">Kirim Saran</button>
             </div>
-        </div>
+            </div>
 
         <div id="game-area" class="hidden">
             <div class="game-nav">
                 <button class="btn-back" onclick="goHome()">⬅ Menu Utama</button>
                 <div id="game-stats">Skor: 0</div>
             </div>
-            <div id="game-canvas-wrapper">
-            </div>
+            <div id="game-canvas-wrapper"></div>
         </div>
     </div>
 
@@ -107,30 +112,22 @@
             if (e.key === 'Enter') saveName();
         });
 
+        // Service Worker Logic
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').then((reg) => {
-
-                    // Cek update secara berkala (setiap 1 jam atau saat user kembali ke tab)
                     setInterval(() => { reg.update(); }, 1000 * 60 * 60);
-
                     reg.onupdatefound = () => {
                         const installingWorker = reg.installing;
                         installingWorker.onstatechange = () => {
-                            if (installingWorker.state === 'installed') {
-                                if (navigator.serviceWorker.controller) {
-                                    // Ada update baru tersedia!
-                                    console.log("Konten baru tersedia, memperbarui...");
-                                    // Kirim pesan ke SW untuk segera aktif
-                                    installingWorker.postMessage({ action: 'skipWaiting' });
-                                }
+                            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                installingWorker.postMessage({ action: 'skipWaiting' });
                             }
                         };
                     };
                 });
             });
 
-            // Event ini akan terpanggil saat SW baru mengambil alih (setelah skipWaiting)
             let refreshing = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (!refreshing) {
@@ -141,5 +138,4 @@
         }
     </script>
 </body>
-
 </html>
