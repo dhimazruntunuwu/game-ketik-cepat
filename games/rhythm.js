@@ -1,59 +1,119 @@
+/**
+ * Rhythm Master - Dhimaz Game Hub
+ * Features: 20 Levels, Sound Effects, Life System, Leaderboard
+ */
+
 window.startRhythmGame = function() {
     const wrapper = document.getElementById('game-canvas-wrapper');
     const stats = document.getElementById('game-stats');
     
-    // UI dengan Tombol di bawah
+    // State Game
+    let score = 0;
+    let level = 1;
+    let misses = 0;
+    const maxMisses = 5;
+    let active = true;
+    let notes = [];
+    let noteSpeed = 4.5;
+    let spawnInterval = 800;
+    const colors = ["#f87171", "#60a5fa", "#4ade80", "#fbbf24"];
+    const keys = ['A', 'S', 'D', 'F'];
+
+    // --- AUDIO SYSTEM ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playNoteSound(freq) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+    }
+
+    function playFailSound() {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    // --- UI RENDER ---
     wrapper.innerHTML = `
-        <div style="text-align:center; user-select:none; touch-action:none;">
-            <canvas id="rhythmCanvas" width="300" height="400" style="background:#111; border:4px solid #333; border-radius:15px; display:block; margin:auto; max-width:90%;"></canvas>
-            
-            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; max-width:300px; margin:20px auto; padding:0 10px;">
-                <button id="btn-lane-0" style="padding:20px 0; background:#f87171; color:white; border:none; border-radius:12px; font-weight:bold; box-shadow: 0 4px #b91c1c; active:transform:translateY(2px);">A</button>
-                <button id="btn-lane-1" style="padding:20px 0; background:#60a5fa; color:white; border:none; border-radius:12px; font-weight:bold; box-shadow: 0 4px #1d4ed8; active:transform:translateY(2px);">S</button>
-                <button id="btn-lane-2" style="padding:20px 0; background:#4ade80; color:white; border:none; border-radius:12px; font-weight:bold; box-shadow: 0 4px #047857; active:transform:translateY(2px);">D</button>
-                <button id="btn-lane-3" style="padding:20px 0; background:#fbbf24; color:white; border:none; border-radius:12px; font-weight:bold; box-shadow: 0 4px #b45309; active:transform:translateY(2px);">F</button>
+        <div style="text-align:center; user-select:none; touch-action:none; font-family:sans-serif;">
+            <div style="display:flex; justify-content:space-between; max-width:300px; margin:auto; color:#475569; font-weight:bold; margin-bottom:10px;">
+                <span>LVL: ${level}/20</span>
+                <span id="miss-display" style="color:#ef4444;">💔 ${maxMisses - misses}</span>
             </div>
-            <p style="color:#64748b; font-size:0.8rem;">Tekan tombol saat balok menyentuh garis!</p>
+            <canvas id="rhythmCanvas" width="300" height="400" style="background:#0f172a; border:4px solid #334155; border-radius:15px; display:block; margin:auto; box-shadow:0 0 20px rgba(0,0,0,0.5);"></canvas>
+            
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; max-width:300px; margin:20px auto;">
+                ${keys.map((k, i) => `
+                    <button id="btn-lane-${i}" style="padding:25px 0; background:${colors[i]}; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.2rem; box-shadow: 0 6px rgba(0,0,0,0.3); cursor:pointer;">${k}</button>
+                `).join('')}
+            </div>
+            <button onclick="surrenderRhythm()" style="background:#ef4444; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-size:0.8rem;">🏳️ Menyerah</button>
         </div>
     `;
-    
+
     const cvs = document.getElementById('rhythmCanvas');
     const ctx = cvs.getContext('2d');
-    const keys = ['A', 'S', 'D', 'F'];
-    const colors = ["#f87171", "#60a5fa", "#4ade80", "#fbbf24"];
-    let notes = [];
-    let score = 0;
-    let active = true;
 
-    // Fungsi Input Utama
+    // --- LOGIC GAME ---
+    const updateDifficulty = () => {
+        // Setiap naik level, kecepatan naik dan interval spawn turun
+        level = Math.floor(score / 500) + 1;
+        if (level > 20) level = 20;
+        
+        noteSpeed = 4.5 + (level * 0.4); 
+        spawnInterval = Math.max(300, 800 - (level * 25));
+    };
+
     const handleInput = (lane) => {
+        if(!active) return;
         let hit = false;
-        notes = notes.filter(n => {
-            // Cek jika note berada di area hit (330px - 390px)
+        
+        for(let i = 0; i < notes.length; i++) {
+            const n = notes[i];
+            // Hit area 330 - 390
             if(n.lane === lane && n.y > 320 && n.y < 390) {
-                score += 10;
                 hit = true;
-                return false;
+                notes.splice(i, 1);
+                score += 50;
+                playNoteSound(261.63 + (lane * 50)); // Suara harmonis
+                break;
             }
-            return true;
-        });
+        }
 
         if(hit) {
-            stats.innerText = `Skor: ${score} | 🎵 Rhythm Master`;
-            // Efek visual tombol ditekan
+            updateDifficulty();
+            stats.innerText = `Skor: ${score} | Lvl: ${level}`;
             const btn = document.getElementById(`btn-lane-${lane}`);
+            btn.style.transform = "translateY(4px)";
             btn.style.filter = "brightness(1.5)";
-            setTimeout(() => btn.style.filter = "brightness(1)", 100);
+            setTimeout(() => {
+                btn.style.transform = "translateY(0)";
+                btn.style.filter = "brightness(1)";
+            }, 100);
         }
     };
 
-    // Event Listener Keyboard
+    // Input Handlers
     window.onkeydown = (e) => {
         let idx = keys.indexOf(e.key.toUpperCase());
         if(idx !== -1) handleInput(idx);
     };
 
-    // Event Listener Tombol (Mouse & Touch)
     keys.forEach((_, i) => {
         const btn = document.getElementById(`btn-lane-${i}`);
         btn.onmousedown = btn.ontouchstart = (e) => {
@@ -62,49 +122,71 @@ window.startRhythmGame = function() {
         };
     });
 
-    function spawnNote() {
+    let lastSpawn = 0;
+    function spawn(time) {
         if(!active) return;
-        notes.push({ lane: Math.floor(Math.random() * 4), y: -30 });
-        setTimeout(spawnNote, 700);
+        if(time - lastSpawn > spawnInterval) {
+            notes.push({ lane: Math.floor(Math.random() * 4), y: -30 });
+            lastSpawn = time;
+        }
+        requestAnimationFrame(spawn);
     }
 
     function loop() {
         if(!active) return;
-        ctx.fillStyle = "#111"; ctx.fillRect(0, 0, 300, 400);
         
-        // Garis Jalur
-        ctx.strokeStyle = "#222";
+        // Background & Grid
+        ctx.fillStyle = "#0f172a"; ctx.fillRect(0, 0, 300, 400);
+        ctx.strokeStyle = "#1e293b";
         for(let i=1; i<4; i++) {
             ctx.beginPath(); ctx.moveTo(i*75, 0); ctx.lineTo(i*75, 400); ctx.stroke();
         }
-        
-        // Area Hit (Target)
-        ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
-        ctx.fillRect(0, 340, 300, 40);
-        ctx.strokeStyle = "#444";
-        ctx.strokeRect(0, 340, 300, 40);
 
-        // Update & Gambar Notes
-        notes.forEach((n, i) => {
-            n.y += 4.5; // Kecepatan jatuh
+        // Target Line
+        ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+        ctx.fillRect(0, 345, 300, 30);
+        ctx.strokeStyle = "#475569";
+        ctx.strokeRect(0, 345, 300, 30);
+
+        // Notes Update
+        for(let i = notes.length - 1; i >= 0; i--) {
+            const n = notes[i];
+            n.y += noteSpeed;
+
             ctx.fillStyle = colors[n.lane];
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur = 15;
             ctx.shadowColor = colors[n.lane];
-            ctx.fillRect(n.lane * 75 + 10, n.y, 55, 20);
-            ctx.shadowBlur = 0; // Reset shadow agar tidak berat
+            ctx.fillRect(n.lane * 75 + 10, n.y, 55, 15);
+            ctx.shadowBlur = 0;
 
-            // Jika note terlewat
             if(n.y > 400) {
                 notes.splice(i, 1);
+                misses++;
+                playFailSound();
+                document.getElementById('miss-display').innerText = `💔 ${Math.max(0, maxMisses - misses)}`;
+                
+                if(misses >= maxMisses) {
+                    gameOver();
+                }
             }
-        });
-
+        }
         requestAnimationFrame(loop);
     }
 
-    spawnNote();
-    loop();
+    window.surrenderRhythm = function() {
+        gameOver();
+    };
 
-    // Fungsi Cleanup saat pindah game
-    window.stopRhythm = () => active = false;
+    function gameOver() {
+        if(!active) return;
+        active = false;
+        alert(`GAME OVER!\nLevel Terakhir: ${level}\nTotal Skor: ${score}`);
+        
+        // Integrasi Leaderboard (Sesuai sistem Dhimaz Hub)
+        if(window.saveToSpreadsheet) saveToSpreadsheet('rhythm_master', score);
+        if(window.showLeaderboard) showLeaderboard('rhythm_master');
+    }
+
+    requestAnimationFrame(spawn);
+    requestAnimationFrame(loop);
 };
