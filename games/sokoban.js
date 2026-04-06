@@ -3,7 +3,7 @@
  * Mekanik Menyerah: Stop Game -> Simpan Skor -> Munculkan Leaderboard (Tetap di Page Game)
  */
 
-const SOKO_CELL = 35; 
+const SOKO_CELL = 35;
 let soko_current_level = 0;
 let soko_map = [];
 let soko_canvas, soko_ctx;
@@ -12,33 +12,66 @@ let soko_active = true;
 
 // Database 20 Level
 const SOKO_LEVELS = [
-    [[1,1,1,1,1],[1,4,0,2,1],[1,0,3,0,1],[1,2,0,0,1],[1,1,1,1,1]], // 1
-    [[1,1,1,1,1,1],[1,4,0,0,2,1],[1,0,3,0,0,1],[1,0,2,3,0,1],[1,1,1,1,1,1]], // 2
-    [[1,1,1,1,1,1,1],[1,2,0,0,1,1,1],[1,0,3,3,0,4,1],[1,2,0,0,0,0,1],[1,1,1,1,1,1,1]], // 3 (Fixed)
-    [[1,1,1,1,1,1,1],[1,1,2,0,0,1,1],[1,2,3,4,0,1,1],[1,1,0,3,0,1,1],[1,1,1,1,1,1,1]], // 4
-    [[1,1,1,1,1,1,1],[1,2,0,1,1,1,1],[1,0,3,0,0,0,1],[1,4,3,2,0,0,1],[1,1,1,1,1,1,1]], // 5
-    [[1,1,1,1,1,1,1,1],[1,0,0,0,1,2,0,1],[1,4,3,0,0,2,0,1],[1,0,3,0,0,0,0,1],[1,1,1,1,1,1,1,1]], // 6
-    [[1,1,1,1,1,1,1,1],[1,2,2,0,1,0,0,1],[1,0,0,3,3,4,0,1],[1,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1]], // 7
-    [[1,1,1,1,1,1,1,1,1],[1,0,0,0,0,0,0,0,1],[1,0,2,2,1,0,0,0,1],[1,0,3,3,4,0,0,0,1],[1,1,1,1,1,1,1,1,1]], // 8
-    [[1,1,1,1,1,1,1,1,1],[1,4,0,1,0,2,0,0,1],[1,0,3,0,3,2,0,0,1],[1,0,0,1,0,0,0,0,1],[1,1,1,1,1,1,1,1,1]], // 9
-    [[1,1,1,1,1,1,1,1,1],[1,0,0,2,2,0,0,0,1],[1,1,0,3,3,0,1,1,1],[1,4,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1]], // 10
-    [[1,1,1,1,1,1,1,1,1,1],[1,0,2,2,2,0,0,0,0,1],[1,0,0,3,3,3,4,0,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]], // 11
-    [[1,1,1,1,1,1,1,1,1,1],[1,4,0,0,1,2,2,2,0,1],[1,0,3,3,3,0,0,0,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]], // 12
-    [[1,1,1,1,1,1,1,1,1,1],[1,2,0,2,0,2,0,2,0,1],[1,0,3,0,3,0,3,0,4,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]], // 13
-    [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,0,0,0,4,0,1],[1,2,2,2,3,3,3,0,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]], // 14
-    [[1,1,1,1,1,1,1,1,1,1],[1,2,2,2,2,0,0,0,0,1],[1,3,3,3,3,0,0,4,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]], // 15
-    [[1,1,1,1,1,1,1,1,1,1,1],[1,4,0,0,0,1,2,2,2,0,1],[1,0,3,3,3,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1]], // 16
-    [[1,1,1,1,1,1,1,1,1,1,1],[1,2,2,3,3,0,0,0,0,0,1],[1,2,2,3,3,0,4,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1]], // 17
-    [[1,1,1,1,1,1,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1],[1,0,2,2,2,2,1,0,0,0,1],[1,0,3,3,3,3,4,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1]], // 18
-    [[1,1,1,1,1,1,1,1,1,1,1],[1,2,0,2,0,2,0,2,0,0,1],[1,0,3,0,3,0,3,0,4,0,1],[1,1,1,1,1,1,1,1,1,1,1]], // 19
-    [[1,1,1,1,1,1,1,1,1,1,1,1],[1,2,2,2,2,2,0,0,0,4,0,1],[1,3,3,3,3,3,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1,1]]  // 20
+    [[1, 1, 1, 1, 1], [1, 4, 0, 2, 1], [1, 0, 3, 0, 1], [1, 2, 0, 0, 1], [1, 1, 1, 1, 1]], // 1
+    [[1, 1, 1, 1, 1, 1], [1, 4, 0, 0, 2, 1], [1, 0, 3, 0, 0, 1], [1, 0, 2, 3, 0, 1], [1, 1, 1, 1, 1, 1]], // 2
+    [[1, 1, 1, 1, 1, 1, 1], [1, 2, 0, 0, 1, 1, 1], [1, 0, 3, 3, 0, 4, 1], [1, 2, 0, 0, 0, 0, 1], [1, 1, 1, 1, 1, 1, 1]],
+    // LEVEL 4 (FIXED): Sekarang ada ruang untuk memutar kotak
+    // Ganti baris ke-4 di SOKO_LEVELS kamu dengan baris ini:
+    [[1, 1, 1, 1, 1, 1, 1], [1, 2, 0, 0, 1, 1, 1], [1, 0, 3, 4, 3, 0, 1], [1, 1, 0, 0, 2, 0, 1], [1, 1, 1, 1, 1, 1, 1]], // Fixed Level 4
+    // LEVEL 5: Perbaikan jalur pojok agar kotak tidak terkunci di dinding
+    [[1,1,1,1,1,1,1],[1,2,0,0,0,2,1],[1,0,3,4,3,0,1],[1,1,0,0,0,0,1],[1,1,1,1,1,1,1]], 
+
+    // LEVEL 6: Penambahan ruang di belakang target
+    [[1,1,1,1,1,1,1,1],[1,0,2,0,1,0,0,1],[1,4,3,0,0,2,0,1],[1,0,3,0,0,0,0,1],[1,1,1,1,1,1,1,1]], 
+
+    // LEVEL 7: Penyesuaian posisi kotak tengah
+    [[1,1,1,1,1,1,1,1],[1,2,2,0,1,0,0,1],[1,0,3,0,0,4,0,1],[1,0,0,3,0,0,0,1],[1,1,1,1,1,1,1,1]],
+
+    // LEVEL 8: Memberi celah di dinding tengah
+    [[1,1,1,1,1,1,1,1,1],[1,0,0,2,0,2,0,0,1],[1,0,3,0,1,0,3,0,1],[1,0,0,0,4,0,0,0,1],[1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 9: Jalur zig-zag yang bisa dilewati
+    [[1,1,1,1,1,1,1,1,1],[1,4,0,1,2,0,2,0,1],[1,0,3,0,0,3,0,0,1],[1,0,0,1,0,0,0,0,1],[1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 10: Memperluas area bawah agar player bisa memutar
+    [[1,1,1,1,1,1,1,1,1],[1,0,2,2,0,0,0,0,1],[1,1,0,3,3,0,1,1,1],[1,4,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 11: Level 3 Kotak (Pelebaran lorong)
+    [[1,1,1,1,1,1,1,1,1,1],[1,2,2,2,0,0,0,0,0,1],[1,0,3,3,3,4,0,0,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 12: Fixed (Posisi target tidak mepet tembok buntu)
+    [[1,1,1,1,1,1,1,1,1,1],[1,4,0,2,1,2,2,0,0,1],[1,0,3,0,3,3,0,0,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 13: Pola Baris (Diberi ruang kosong di antara kotak)
+    [[1,1,1,1,1,1,1,1,1,1],[1,2,0,2,0,2,0,2,0,1],[1,3,4,3,0,3,0,3,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 14: Pemisahan target agar tidak menumpuk di satu sudut
+    [[1,1,1,1,1,1,1,1,1,1],[1,1,2,2,2,0,0,4,0,1],[1,0,3,3,3,0,0,0,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 15: 4 Kotak (Layout Labirin Sederhana)
+    [[1,1,1,1,1,1,1,1,1,1],[1,2,2,2,2,0,0,0,0,1],[1,0,3,3,3,3,0,4,0,1],[1,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 16: Penyesuaian dinding pemisah
+    [[1,1,1,1,1,1,1,1,1,1,1],[1,4,0,2,2,1,0,2,0,0,1],[1,0,3,3,0,0,3,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 17: Perbaikan posisi spawn player agar tidak menjebak kotak pertama
+    [[1,1,1,1,1,1,1,1,1,1,1],[1,2,2,3,0,0,0,0,0,0,1],[1,2,2,0,3,0,4,0,0,0,1],[1,0,0,3,3,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 18: Memastikan ada jalan keluar di sisi kanan
+    [[1,1,1,1,1,1,1,1,1,1,1],[1,0,0,2,2,2,2,0,0,0,1],[1,0,0,3,3,3,3,1,0,0,1],[1,0,0,0,4,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 19: Pola Kolom (Ruang gerak vertikal diperluas)
+    [[1,1,1,1,1,1,1,1,1,1,1],[1,2,3,2,3,2,3,2,0,0,1],[1,0,0,0,4,0,0,0,3,0,1],[1,1,1,1,1,1,1,1,1,1,1]],
+
+    // LEVEL 20: Final Boss (5 Kotak dengan ruang manuver penuh di tengah)
+    [[1,1,1,1,1,1,1,1,1,1,1,1],[1,2,2,2,2,2,0,0,0,4,0,1],[1,0,0,0,0,0,0,0,0,0,0,1],[1,0,3,3,3,3,3,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1,1]]
 ];
 
 function startSokoban() {
     soko_active = true;
     const wrapper = document.getElementById('game-canvas-wrapper');
     const levelData = SOKO_LEVELS[soko_current_level];
-    
+
     soko_map = levelData.map(row => [...row]);
     const rows = soko_map.length;
     const cols = soko_map[0].length;
@@ -76,16 +109,16 @@ function startSokoban() {
     soko_canvas = document.getElementById('soko-canvas');
     soko_ctx = soko_canvas.getContext('2d');
 
-    for(let r=0; r<soko_map.length; r++) {
-        for(let c=0; c<soko_map[r].length; c++) {
-            if(soko_map[r][c] === 4) playerPos = { r, c };
+    for (let r = 0; r < soko_map.length; r++) {
+        for (let c = 0; c < soko_map[r].length; c++) {
+            if (soko_map[r][c] === 4) playerPos = { r, c };
         }
     }
 
     drawSoko();
 
     window.onkeydown = (e) => {
-        if(!soko_active) return;
+        if (!soko_active) return;
         let dr = 0, dc = 0;
         const key = e.key.toLowerCase();
         if (key === "arrowup" || key === "w") dr = -1;
@@ -97,7 +130,7 @@ function startSokoban() {
 }
 
 function moveSoko(dr, dc) {
-    if(!soko_active) return;
+    if (!soko_active) return;
     const nr = playerPos.r + dr;
     const nc = playerPos.c + dc;
     const targetCell = soko_map[nr][nc];
@@ -105,13 +138,13 @@ function moveSoko(dr, dc) {
     if (targetCell === 0 || targetCell === 2) {
         updateMapPos(playerPos.r, playerPos.c, nr, nc, 4);
         playerPos = { r: nr, c: nc };
-    } 
+    }
     else if (targetCell === 3 || targetCell === 5) {
         const nnr = nr + dr;
         const nnc = nc + dc;
         const behindBox = soko_map[nnr][nnc];
         if (behindBox === 0 || behindBox === 2) {
-            soko_map[nnr][nnc] = (behindBox === 2) ? 5 : 3; 
+            soko_map[nnr][nnc] = (behindBox === 2) ? 5 : 3;
             updateMapPos(playerPos.r, playerPos.c, nr, nc, 4);
             playerPos = { r: nr, c: nc };
         }
@@ -131,19 +164,19 @@ function drawSoko() {
     for (let r = 0; r < soko_map.length; r++) {
         for (let c = 0; c < soko_map[r].length; c++) {
             const x = c * SOKO_CELL, y = r * SOKO_CELL, type = soko_map[r][c];
-            if (type === 1) { soko_ctx.fillStyle = "#7f8c8d"; soko_ctx.fillRect(x,y,SOKO_CELL,SOKO_CELL); }
-            if (type === 2 || SOKO_LEVELS[soko_current_level][r][c] === 2) { 
-                soko_ctx.fillStyle = "#2ecc71"; soko_ctx.beginPath(); 
-                soko_ctx.arc(x+SOKO_CELL/2, y+SOKO_CELL/2, 5, 0, Math.PI*2); soko_ctx.fill(); 
+            if (type === 1) { soko_ctx.fillStyle = "#7f8c8d"; soko_ctx.fillRect(x, y, SOKO_CELL, SOKO_CELL); }
+            if (type === 2 || SOKO_LEVELS[soko_current_level][r][c] === 2) {
+                soko_ctx.fillStyle = "#2ecc71"; soko_ctx.beginPath();
+                soko_ctx.arc(x + SOKO_CELL / 2, y + SOKO_CELL / 2, 5, 0, Math.PI * 2); soko_ctx.fill();
             }
             if (type === 3 || type === 5) {
                 soko_ctx.fillStyle = type === 5 ? "#27ae60" : "#e67e22";
-                soko_ctx.fillRect(x+4,y+4,SOKO_CELL-8,SOKO_CELL-8);
-                soko_ctx.strokeStyle = "rgba(0,0,0,0.2)"; soko_ctx.strokeRect(x+4,y+4,SOKO_CELL-8,SOKO_CELL-8);
+                soko_ctx.fillRect(x + 4, y + 4, SOKO_CELL - 8, SOKO_CELL - 8);
+                soko_ctx.strokeStyle = "rgba(0,0,0,0.2)"; soko_ctx.strokeRect(x + 4, y + 4, SOKO_CELL - 8, SOKO_CELL - 8);
             }
             if (type === 4) {
                 soko_ctx.fillStyle = "#3498db"; soko_ctx.beginPath();
-                soko_ctx.arc(x+SOKO_CELL/2, y+SOKO_CELL/2, SOKO_CELL*0.35, 0, Math.PI*2); soko_ctx.fill();
+                soko_ctx.arc(x + SOKO_CELL / 2, y + SOKO_CELL / 2, SOKO_CELL * 0.35, 0, Math.PI * 2); soko_ctx.fill();
             }
         }
     }
@@ -173,18 +206,18 @@ function checkSokoWin() {
 function surrenderSokoban() {
     soko_active = false; // Matikan kontrol game
     const finalScore = soko_current_level * 100;
-    
+
     // Nonaktifkan tombol menyerah agar tidak double submit
     document.getElementById('btn-surrender').disabled = true;
     document.getElementById('btn-surrender').style.opacity = "0.5";
 
     // 1. Simpan Skor ke Spreadsheet
     saveToSpreadsheet('sokoban', finalScore);
-    
+
     // 2. Tampilkan Leaderboard di element soko-leaderboard-area
     // Catatan: Pastikan showLeaderboard kamu bisa menerima argumen target element, 
     // atau jika global, dia akan muncul di modal standar.
     showLeaderboard('sokoban');
-    
+
     console.log("Game stopped, score " + finalScore + " submitted.");
 }

@@ -1,10 +1,11 @@
 /**
- * Word Search Game - Clean Version (No Word List Below)
+ * Word Search Game - Dhimaz Game Hub Edition
+ * High-Precision Touch & Leaderboard Integrated
  */
 
 const WS_GRID_SIZE = 12; 
 const WS_CELL_SIZE = 35; 
-const WS_WORDS = [
+const WS_WORDS_LIBRARY = [
     // --- KATA DASAR & UMUM ---
     "MAKAN", "MINUM", "TIDUR", "LARI", "JALAN", "DUDUK", "BACA", "TULIS", "LIHAT", "DENGAR",
     "SENYUM", "TAWA", "MAIN", "KERJA", "BELAJAR", "BANGUN", "MANDI", "MASAK", "SAPU", "BERSIH",
@@ -85,179 +86,189 @@ const WS_WORDS = [
 
 let ws_grid = [];
 let ws_foundWords = [];
-let ws_current_words = []; // Kata yang terpilih untuk ronde ini
+let ws_current_words = [];
 let isDragging = false;
 let startCell = null;
 let currentCell = null;
 let ws_canvas, ws_ctx;
+let ws_gameActive = true;
 
-function startWordSearchGame() {
+window.startWordSearchGame = function() {
+    ws_gameActive = true;
     const wrapper = document.getElementById('game-canvas-wrapper');
     const width = WS_GRID_SIZE * WS_CELL_SIZE;
     const height = WS_GRID_SIZE * WS_CELL_SIZE;
 
-    // Menghapus div ws-word-list dari innerHTML
     wrapper.innerHTML = `
-        <div style="text-align:center; padding: 20px;">
-            <canvas id="ws-canvas" width="${width}" height="${height}" 
-                style="border:4px solid #2c3e50; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor:crosshair;">
-            </canvas>
-            <p style="color: #7f8c8d; font-family: sans-serif; margin-top: 10px;">Cari kata tersembunyi dengan cara drag huruf!</p>
+        <div style="text-align:center; padding: 15px; font-family: 'Segoe UI', sans-serif; background:#f8fafc; border-radius:20px;">
+            <h2 style="margin:0 0 10px 0; color:#1e293b;">🔍 Word Search</h2>
+            
+            <div style="position:relative; display:inline-block; margin-bottom:15px;">
+                <canvas id="ws-canvas" width="${width}" height="${height}" 
+                    style="border:5px solid #334155; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor:crosshair; touch-action:none; max-width:100%; height:auto;">
+                </canvas>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; justify-content: center; gap: 10px;">
+                <button onclick="startWordSearchGame()" style="padding:10px 20px; background:#6366f1; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">🔄 Acak Baru</button>
+                <button onclick="surrenderWordSearch()" style="padding:10px 20px; background:#ef4444; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">🏳️ Menyerah</button>
+            </div>
+
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 15px;">
+                Temukan <b>${ws_current_words.length} kata</b> tersembunyi!<br>
+                <span style="color:#94a3b8;">Skor: <span id="ws-score-display">0</span></span>
+            </p>
         </div>
     `;
 
     ws_canvas = document.getElementById('ws-canvas');
     ws_ctx = ws_canvas.getContext('2d');
 
-    setupGrid();
-    drawGrid();
+    setupWSGrid();
+    drawWSGrid();
 
-    ws_canvas.addEventListener('mousedown', ws_onStart);
-    ws_canvas.addEventListener('mousemove', ws_onMove);
-    window.addEventListener('mouseup', ws_onEnd);
+    // Event Listeners (Mouse + Touch)
+    ws_canvas.addEventListener('mousedown', ws_handleStart);
+    ws_canvas.addEventListener('mousemove', ws_handleMove);
+    window.addEventListener('mouseup', ws_handleEnd);
 
-    ws_canvas.addEventListener('touchstart', (e) => ws_onStart(e.touches[0]), {passive: false});
-    ws_canvas.addEventListener('touchmove', (e) => { e.preventDefault(); ws_onMove(e.touches[0]); }, {passive: false});
-    window.addEventListener('touchend', ws_onEnd);
-}
+    ws_canvas.addEventListener('touchstart', (e) => { e.preventDefault(); ws_handleStart(e.touches[0]); }, {passive: false});
+    ws_canvas.addEventListener('touchmove', (e) => { e.preventDefault(); ws_handleMove(e.touches[0]); }, {passive: false});
+    window.addEventListener('touchend', ws_handleEnd);
+};
 
-function setupGrid() {
+function setupWSGrid() {
     ws_grid = Array.from({ length: WS_GRID_SIZE }, () => Array(WS_GRID_SIZE).fill(''));
     ws_foundWords = [];
-
-    // Ambil 12 kata acak saja agar tidak infinite loop
-    ws_current_words = WS_WORDS
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 12);
+    ws_current_words = WS_WORDS_LIBRARY.sort(() => 0.5 - Math.random()).slice(0, 10);
 
     ws_current_words.forEach(word => {
         let placed = false;
         let attempts = 0;
-        while (!placed && attempts < 50) {
-            const direction = Math.random() > 0.5 ? 'H' : 'V';
-            const row = Math.floor(Math.random() * WS_GRID_SIZE);
-            const col = Math.floor(Math.random() * WS_GRID_SIZE);
+        while (!placed && attempts < 100) {
+            const dir = Math.random() > 0.5 ? {r:0, c:1} : {r:1, c:0}; // Horizontal or Vertical
+            const r = Math.floor(Math.random() * (WS_GRID_SIZE - (dir.r * word.length)));
+            const c = Math.floor(Math.random() * (WS_GRID_SIZE - (dir.c * word.length)));
 
-            if (canPlaceWord(word, row, col, direction)) {
-                for (let i = 0; i < word.length; i++) {
-                    if (direction === 'H') ws_grid[row][col + i] = word[i];
-                    else ws_grid[row + i][col] = word[i];
+            let canPlace = true;
+            for(let i=0; i<word.length; i++) {
+                if(ws_grid[r + i*dir.r][c + i*dir.c] !== '' && ws_grid[r + i*dir.r][c + i*dir.c] !== word[i]) {
+                    canPlace = false; break;
                 }
+            }
+
+            if(canPlace) {
+                for(let i=0; i<word.length; i++) ws_grid[r + i*dir.r][c + i*dir.c] = word[i];
                 placed = true;
             }
             attempts++;
         }
     });
 
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let r = 0; r < WS_GRID_SIZE; r++) {
-        for (let c = 0; c < WS_GRID_SIZE; c++) {
-            if (ws_grid[r][c] === '') {
-                ws_grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
-            }
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(let r=0; r<WS_GRID_SIZE; r++) {
+        for(let c=0; c<WS_GRID_SIZE; c++) {
+            if(ws_grid[r][c] === '') ws_grid[r][c] = chars[Math.floor(Math.random()*chars.length)];
         }
     }
 }
 
-function canPlaceWord(word, r, c, dir) {
-    if (dir === 'H' && c + word.length > WS_GRID_SIZE) return false;
-    if (dir === 'V' && r + word.length > WS_GRID_SIZE) return false;
-    for (let i = 0; i < word.length; i++) {
-        const char = dir === 'H' ? ws_grid[r][c + i] : ws_grid[r + i][c];
-        if (char !== '' && char !== word[i]) return false;
-    }
-    return true;
+// Koordinat Presisi untuk Mobile
+function getWSMousePos(e) {
+    const rect = ws_canvas.getBoundingClientRect();
+    const scaleX = ws_canvas.width / rect.width;
+    const scaleY = ws_canvas.height / rect.height;
+    return {
+        x: Math.floor(((e.clientX - rect.left) * scaleX) / WS_CELL_SIZE),
+        y: Math.floor(((e.clientY - rect.top) * scaleY) / WS_CELL_SIZE)
+    };
 }
 
-function ws_onStart(e) {
+function ws_handleStart(e) {
+    if(!ws_gameActive) return;
     isDragging = true;
-    const rect = ws_canvas.getBoundingClientRect();
-    startCell = {
-        x: Math.floor((e.clientX - rect.left) / WS_CELL_SIZE),
-        y: Math.floor((e.clientY - rect.top) / WS_CELL_SIZE)
-    };
+    startCell = getWSMousePos(e);
     currentCell = startCell;
 }
 
-function ws_onMove(e) {
-    if (!isDragging) return;
-    const rect = ws_canvas.getBoundingClientRect();
-    const pos = {
-        x: Math.floor((e.clientX - rect.left) / WS_CELL_SIZE),
-        y: Math.floor((e.clientY - rect.top) / WS_CELL_SIZE)
-    };
-    
+function ws_handleMove(e) {
+    if (!isDragging || !ws_gameActive) return;
+    const pos = getWSMousePos(e);
     if (pos.x >= 0 && pos.x < WS_GRID_SIZE && pos.y >= 0 && pos.y < WS_GRID_SIZE) {
         currentCell = pos;
-        drawGrid();
-        // Gambar garis seleksi saat drag
-        drawSelectionLine(startCell, currentCell, "rgba(52, 152, 219, 0.4)"); 
+        drawWSGrid();
+        drawWSSelection(startCell, currentCell, "rgba(99, 102, 241, 0.4)");
     }
 }
 
-function ws_onEnd() {
-    if (!isDragging) return;
+function ws_handleEnd() {
+    if (!isDragging || !ws_gameActive) return;
     isDragging = false;
 
-    const selected = getSelectedText(startCell, currentCell);
+    const selected = getWSText(startCell, currentCell);
     const reversed = selected.split('').reverse().join('');
 
-    // Cek apakah kata normal atau terbalik ada di daftar
     if (ws_current_words.includes(selected) || ws_current_words.includes(reversed)) {
-        const wordFound = ws_current_words.includes(selected) ? selected : reversed;
-        if (!ws_foundWords.includes(wordFound)) {
-            ws_foundWords.push(wordFound);
-            alert("Bagus! Kamu menemukan kata: " + wordFound);
+        const word = ws_current_words.includes(selected) ? selected : reversed;
+        if (!ws_foundWords.includes(word)) {
+            ws_foundWords.push(word);
+            document.getElementById('ws-score-display').innerText = ws_foundWords.length * 100;
         }
     }
-
-    drawGrid();
+    drawWSGrid();
     if (ws_foundWords.length === ws_current_words.length) {
-        setTimeout(() => alert("Luar biasa! Semua kata telah ditemukan!"), 200);
+        setTimeout(() => { alert("🏆 Selamat! Semua kata ditemukan!"); surrenderWordSearch(); }, 300);
     }
 }
 
-function getSelectedText(s, e) {
+function getWSText(s, e) {
     let text = "";
-    // Hanya mendukung Horizontal atau Vertikal murni
-    if (s.y === e.y) {
+    if (s.y === e.y) { // Horiz
         const min = Math.min(s.x, e.x), max = Math.max(s.x, e.x);
         for (let i = min; i <= max; i++) text += ws_grid[s.y][i];
-    } else if (s.x === e.x) {
+    } else if (s.x === e.x) { // Vert
         const min = Math.min(s.y, e.y), max = Math.max(s.y, e.y);
         for (let i = min; i <= max; i++) text += ws_grid[i][s.x];
     }
     return text;
 }
 
-function drawGrid() {
+function drawWSGrid() {
     ws_ctx.clearRect(0, 0, ws_canvas.width, ws_canvas.height);
-    
-    // Background Grid
-    ws_ctx.fillStyle = "#ecf0f1";
+    ws_ctx.fillStyle = "#ffffff";
     ws_ctx.fillRect(0,0, ws_canvas.width, ws_canvas.height);
 
     ws_ctx.textAlign = "center";
     ws_ctx.textBaseline = "middle";
-    ws_ctx.font = "bold 16px 'Segoe UI', Arial";
+    ws_ctx.font = "bold 16px sans-serif";
 
     for (let r = 0; r < WS_GRID_SIZE; r++) {
         for (let c = 0; c < WS_GRID_SIZE; c++) {
             const x = c * WS_CELL_SIZE + WS_CELL_SIZE / 2;
             const y = r * WS_CELL_SIZE + WS_CELL_SIZE / 2;
-            
-            ws_ctx.fillStyle = "#2c3e50";
+            ws_ctx.fillStyle = "#334155";
             ws_ctx.fillText(ws_grid[r][c], x, y);
         }
     }
 }
 
-function drawSelectionLine(s, e, color) {
+function drawWSSelection(s, e, color) {
     ws_ctx.beginPath();
-    ws_ctx.lineWidth = WS_CELL_SIZE * 0.7;
+    ws_ctx.lineWidth = WS_CELL_SIZE * 0.8;
     ws_ctx.lineCap = "round";
     ws_ctx.strokeStyle = color;
     ws_ctx.moveTo(s.x * WS_CELL_SIZE + WS_CELL_SIZE/2, s.y * WS_CELL_SIZE + WS_CELL_SIZE/2);
     ws_ctx.lineTo(e.x * WS_CELL_SIZE + WS_CELL_SIZE/2, e.y * WS_CELL_SIZE + WS_CELL_SIZE/2);
     ws_ctx.stroke();
 }
+
+window.surrenderWordSearch = function() {
+    ws_gameActive = false;
+    const finalScore = ws_foundWords.length * 100;
+    
+    // Integrasi ke Spreadsheet & Leaderboard Dhimaz Hub
+    if(window.saveToSpreadsheet) saveToSpreadsheet('word_search', finalScore);
+    if(window.showLeaderboard) showLeaderboard('word_search');
+    
+    alert("Permainan Selesai! Skor Anda: " + finalScore);
+};

@@ -2,7 +2,8 @@
     "name": "Fun Game Hub",
     "short_name": "GameHub",
     "description": "Koleksi game seru dalam satu genggaman",
-    "start_url": "index.html",
+    "start_url": "/game-ketik-cepat/",
+    "scope": "/game-ketik-cepat/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#3498db",
@@ -11,13 +12,13 @@
             "src": "images/icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         },
         {
             "src": "images/icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         }
     ]
 }
