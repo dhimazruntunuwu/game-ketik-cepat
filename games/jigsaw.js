@@ -2,10 +2,20 @@ window.startJigsawGame = function () {
     const wrapper = document.getElementById('game-canvas-wrapper');
     const stats = document.getElementById('game-stats');
 
-    // 1. Setup UI
+    // 1. Setup UI (Referensi di Atas, Canvas Tengah, Tombol Bawah)
     wrapper.innerHTML = `
-        <div style="text-align:center; user-select:none; font-family:sans-serif; padding:10px;">
-            <canvas id="jigsawCanvas" width="760" height="420" style="background:#fff1f2; border:4px solid #fecdd3; border-radius:16px; display:block; margin:auto; touch-action:none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></canvas>
+        <div style="text-align:center; user-select:none; font-family:sans-serif; padding:10px; max-width: 800px; margin: auto;">
+            
+            <div style="margin-bottom: 15px;">
+                <p style="margin: 0 0 8px 0; color: #db2777; font-weight: bold; font-size: 0.85rem;">CONTOH JADI:</p>
+                <div style="width: 120px; height: 70px; margin: auto; border: 3px solid #fecdd3; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <img src="images/sanrio.png" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
+                </div>
+            </div>
+
+            <canvas id="jigsawCanvas" width="760" height="420" 
+                style="background:#fff1f2; border:4px solid #fecdd3; border-radius:16px; display:block; margin:auto; touch-action:none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 100%; height: auto;">
+            </canvas>
             
             <div style="margin-top:20px; display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; max-width:180px; margin:auto;">
                 <div></div>
@@ -15,6 +25,7 @@ window.startJigsawGame = function () {
                 <button id="jigDown" style="padding:15px; background:#f472b6; color:white; border:none; border-radius:15px; font-size:1.5rem; cursor:pointer; box-shadow: 0 4px #db2777;">▼</button>
                 <button id="jigRight" style="padding:15px; background:#f472b6; color:white; border:none; border-radius:15px; font-size:1.2rem; cursor:pointer; box-shadow: 0 4px #db2777;">▶</button>
             </div>
+
             <p style="margin-top:15px; color:#db2777; font-size:0.9rem; font-weight:bold;">Gerakkan kotak kosong menggunakan tombol!</p>
         </div>
     `;
@@ -43,8 +54,8 @@ window.startJigsawGame = function () {
     };
 
     img.onerror = () => {
-        alert("Gambar tidak ditemukan!");
-        goHome();
+        alert("Gambar 'images/sanrio.png' tidak ditemukan!");
+        if (typeof goHome === 'function') goHome();
     };
 
     // 4. Inisialisasi
@@ -52,7 +63,7 @@ window.startJigsawGame = function () {
         pieces = [];
         for (let i = 0; i < COLS * ROWS; i++) pieces.push(i);
 
-        // Acak menggunakan logika yang sama dengan user agar solvable
+        // Acak puzzle
         for (let i = 0; i < 200; i++) {
             const dirs = ['up', 'down', 'left', 'right'];
             moveEmptySlot(dirs[Math.floor(Math.random() * 4)], true);
@@ -60,30 +71,17 @@ window.startJigsawGame = function () {
         moves = 0;
     }
 
-    // 5. LOGIKA UTAMA: Menggerakkan Slot Kosong (Empty Slot)
+    // 5. Logika Pergerakan Slot Kosong
     function moveEmptySlot(dir, isShuffle = false) {
         if (isWin && !isShuffle) return;
         let targetIdx = -1;
 
-        // Klik ATAS -> Slot Kosong pindah ke ATAS (ambil kepingan di atasnya)
-        if (dir === 'up' && emptyIdx >= COLS) {
-            targetIdx = emptyIdx - COLS;
-        }
-        // Klik BAWAH -> Slot Kosong pindah ke BAWAH (ambil kepingan di bawahnya)
-        else if (dir === 'down' && emptyIdx < COLS * (ROWS - 1)) {
-            targetIdx = emptyIdx + COLS;
-        }
-        // Klik KIRI -> Slot Kosong pindah ke KIRI (ambil kepingan di kirinya)
-        else if (dir === 'left' && emptyIdx % COLS !== 0) {
-            targetIdx = emptyIdx - 1;
-        }
-        // Klik KANAN -> Slot Kosong pindah ke KANAN (ambil kepingan di kanannya)
-        else if (dir === 'right' && (emptyIdx + 1) % COLS !== 0) {
-            targetIdx = emptyIdx + 1;
-        }
+        if (dir === 'up' && emptyIdx >= COLS) targetIdx = emptyIdx - COLS;
+        else if (dir === 'down' && emptyIdx < COLS * (ROWS - 1)) targetIdx = emptyIdx + COLS;
+        else if (dir === 'left' && emptyIdx % COLS !== 0) targetIdx = emptyIdx - 1;
+        else if (dir === 'right' && (emptyIdx + 1) % COLS !== 0) targetIdx = emptyIdx + 1;
 
         if (targetIdx !== -1) {
-            // Tukar posisi data
             [pieces[emptyIdx], pieces[targetIdx]] = [pieces[targetIdx], pieces[emptyIdx]];
             emptyIdx = targetIdx;
 
@@ -97,25 +95,16 @@ window.startJigsawGame = function () {
     }
 
     // 6. Deteksi Menang
-    // Di dalam file jigsaw.js (Fungsi checkWin)
     function checkWin() {
-        // Mengecek apakah semua kepingan sudah di posisi yang benar
         if (pieces.every((p, i) => p === i)) {
             isWin = true;
             draw();
-
-            // --- TAMBAHKAN LOGIKA INI ---
-            const finalMoves = moves; // Ambil jumlah gerakan terakhir
+            const finalMoves = moves;
 
             setTimeout(() => {
                 alert(`💞 MANTAAP! 💞\nSelesai dalam ${finalMoves} gerakan.`);
-
-                // 1. Simpan skor ke Spreadsheet
-                // Gunakan ID 'jigsaw' sesuai dengan daftar di main.js
-                saveToSpreadsheet('jigsaw', finalMoves);
-
-                // 2. Tampilkan Leaderboard
-                showLeaderboard('jigsaw');
+                if (typeof saveToSpreadsheet === 'function') saveToSpreadsheet('jigsaw', finalMoves);
+                if (typeof showLeaderboard === 'function') showLeaderboard('jigsaw');
             }, 300);
         }
     }
@@ -133,11 +122,12 @@ window.startJigsawGame = function () {
 
             ctx.drawImage(img, sx, sy, sw, sh, dx, dy, pieceW, pieceH);
             ctx.strokeStyle = "#fecdd3";
+            ctx.lineWidth = 2;
             ctx.strokeRect(dx, dy, pieceW, pieceH);
         }
     }
 
-    // 8. Event Listener
+    // 8. Event Listener Tombol
     document.getElementById('jigUp').onclick = () => moveEmptySlot('up');
     document.getElementById('jigDown').onclick = () => moveEmptySlot('down');
     document.getElementById('jigLeft').onclick = () => moveEmptySlot('left');
