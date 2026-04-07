@@ -24,6 +24,9 @@ const games = [
     { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣', category: 'Asah Otak', isZen: true, method: 'startMinesweeperGame' },
     { id: 'light_sout', name: 'Lights Out', icon: '💡', category: 'Asah Otak', isZen: true, method: 'startLightSout' },
     { id: 'sokoban', name: 'Sokoban', icon: '📦', category: 'Asah Otak', isZen: true, method: 'startSokoban' },
+    { id: 'psikotes', name: 'Latihan Psikotes', icon: '🧠', category: 'Asah Otak', isZen: true, method: 'startPsikotesGame' },
+    { id: 'raven', name: 'Raven Matrices', icon: '🧩', category: 'Asah Otak', isZen: true, method: 'startRavenGame' },
+        { id: 'silogisme', name: 'Penalaran Logis', icon: '⚖️', category: 'Asah Otak', isZen: true, method: 'startSilogismeGame' },
 
     // --- KATEGORI: ARCADE ---
     { id: 'snake', name: 'Snake Klasik', icon: '🐍', category: 'Arcade', isZen: true, method: 'startSnakeGame' },
@@ -53,9 +56,11 @@ const games = [
     { id: 'math_quest', name: 'Math Quest', icon: '🛡️', category: 'Matematika', isZen: true, method: 'startMathQuest' },
     { id: 'math_story', name: 'Math Story', icon: '📚', category: 'Matematika', isZen: true, method: 'startMathStory' },
     { id: '2048', name: '2048 Lite', icon: '🔢', category: 'Matematika', isZen: false, method: 'start2048Game' },
+    { id: 'deret', name: 'Deret Angka', icon: '🔢', category: 'Matematika', isZen: true, method: 'startDeretAngkaGame' },
+    { id: 'arismetik', name: 'Logika Arismetik', icon: '📈', category: 'Matematika', isZen: true, method: 'startArismetikGame' },
 
     // --- KATEGORI: BOARD GAME ---
-    { id: 'tictactoe', name: 'Tic-Tac-Toe', icon: '⭕', category: 'Board Game', isZen: false, method: 'startTictactoeGame' },
+    { id: 'tictactoe', name: 'Tic-Tac-Toe', icon: '⭕', category: 'Board Game', isZen: true, method: 'startTictactoeGame' },
     { id: 'ular_tangga', name: 'Ular Tangga', icon: '🎲', category: 'Board Game', isZen: true, method: 'startUlarTanggaGame' },
     { id: 'suit', name: 'Suit Jepang', icon: '✊', category: 'Board Game', isZen: true, method: 'startSuitGame' },
     { id: 'go', name: 'Go Game', icon: '⚪', category: 'Board Game', isZen: true, method: 'startGoGame' }, 
