@@ -54,12 +54,41 @@ header h1 {
     /* Default HP: 2 Kolom (Biar pas di Xiaomi 12T) */
     grid-template-columns: repeat(2, 1fr); 
     gap: 15px; 
+    padding: 10px 5px; /* Tambah padding agar shadow kartu tidak terpotong */
+}
+
+#menu-grid {
+    display: block; /* Memastikan kategori berderet ke bawah */
+    width: 100%;
+}
+
+/* Wrapper per kategori */
+.category-wrapper {
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+/* Judul Kategori */
+.category-wrapper h2 {
+    font-size: 1.4rem;
+    color: var(--prm);
+    border-left: 5px solid var(--prm);
+    padding-left: 15px;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+/* Grid khusus untuk kartu game di dalam kategori */
+.category-wrapper .game-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); /* 2 Kolom di HP */
+    gap: 15px; 
 }
 
 /* Responsive Grid untuk Tablet/Laptop */
 @media (min-width: 768px) {
-    .game-grid { 
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    .category-wrapper .game-grid { 
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Banyak kolom di Desktop */
     }
 }
 
@@ -223,6 +252,11 @@ canvas {
     --modal-border: #60a5fa; /* Border modal jadi biru terang di dark mode */
 }
 
+[data-theme="dark"] .category-wrapper h2 {
+    color: var(--prm); /* Biru terang agar kontras dengan background gelap */
+    border-left-color: var(--prm);
+}
+
 [data-theme="dark"] #suggestion-input, 
 [data-theme="dark"] .suggestion-container,
 [data-theme="dark"] .modal-content {
@@ -296,14 +330,21 @@ input[type="text"] {
 /* --- Tambahan untuk Fitur Nama & Header Profile --- */
 
 /* Membuat header flexbox agar judul di kiri dan profil di kanan */
-header {
+header { 
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
     align-items: center;
-    flex-wrap: wrap; /* Agar aman di HP layar kecil */
+    flex-wrap: wrap; 
     gap: 15px;
-    padding: 0 10px;
-    text-align: left; /* Timpa text-align: center bawaan */
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+header h1 { 
+    font-size: 1.8rem; 
+    color: var(--slate-dark); 
+    margin: 0;
+    letter-spacing: -1px;
 }
 
 .header-right {

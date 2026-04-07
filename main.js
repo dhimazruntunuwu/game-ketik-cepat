@@ -11,54 +11,66 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby96nWUkoD0lMp0BU9PugQhAGJ38ZK0ZCd4N36ftjJsYTl1JUGeUcquNHLBH7F2hu5N/exec";
 
 const games = [
-    { id: 'typing', name: 'Ketik Cepat', icon: '⌨️', isZen: false, method: 'startTypingGame' },
-    { id: 'snake', name: 'Snake Klasik', icon: '🐍', isZen: true, method: 'startSnakeGame' },
-    { id: 'bug', name: 'Catch Bug', icon: '🦟', isZen: false, method: 'startBugGame' },
-    { id: 'memory', name: 'Memo-Droid', icon: '🧠', isZen: false, method: 'startMemoryGame' },
-    { id: 'tictactoe', name: 'Tic-Tac-Toe', icon: '⭕', isZen: false, method: 'startTictactoeGame' },
-    { id: 'math', name: 'Math Rush', icon: '➕', isZen: false, method: 'startMathGame' },
-    { id: 'whac', name: 'Whack-a-Mole', icon: '🔨', isZen: false, method: 'startWhacGame' },
-    { id: 'dino', name: 'Dino Jump', icon: '🌵', isZen: true, method: 'startDinoGame' },
-    { id: 'code', name: 'Tebak Kode', icon: '🔐', isZen: true, method: 'startCodeGame' },
-    { id: 'color', name: 'Color Match', icon: '🌈', isZen: false, method: 'startColorGame' },
-    { id: 'math_sub', name: 'Kurang-Kurangan', icon: '➖', isZen: false, method: 'startSubtractionGame' },
-    { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️', isZen: false, method: 'startMultiplicationGame' },
-    { id: 'math_div', name: 'Bagi-Bagian', icon: '➗', isZen: false, method: 'startDivisionGame' },
-    { id: 'drawing', name: 'Menggambar', icon: '🎨', isZen: true, method: 'startDrawingGame' },
-    { id: 'flappy', name: 'Flappy Box', icon: '🐦', isZen: true, method: 'startFlappyGame' },
-    { id: '2048', name: '2048 Lite', icon: '🔢', isZen: false, method: 'start2048Game' },
-    { id: 'stack', name: 'Tower Stack', icon: '🏗️', isZen: false, method: 'startStackGame' },
-    { id: 'bricks', name: 'Brick Breaker', icon: '🧱', isZen: true, method: 'startBricksGame' },
-    { id: 'tetris', name: 'Tetris Classic', icon: '🕹️', isZen: true, method: 'startTetrisGame' },
-    { id: 'racer', name: 'Traffic Racer', icon: '🏎️', isZen: true, method: 'startRacerGame' },
-    { id: 'knife', name: 'Knife Hit', icon: '🔪', isZen: true, method: 'startKnifeGame' },
-    { id: 'miner', name: 'Gold Miner', icon: '⛏️', isZen: true, method: 'startMinerGame' },
-    { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣', isZen: true, method: 'startMinesweeperGame' },
-    { id: 'simon', name: 'Simon Says', icon: '🧠', isZen: true, method: 'startSimonGame' },
-    { id: 'jigsaw', name: 'Jigsaw', icon: '🧩', isZen: true, method: 'startJigsawGame' },
-    { id: 'ular_tangga', name: 'Ular Tangga', icon: '🎲', isZen: true, method: 'startUlarTanggaGame' },
-    { id: 'tebak_koin', name: 'Tebak Koin', icon: '🪙', isZen: true, method: 'startTebakKoinGame' },
-    { id: 'suit', name: 'Suit Jepang', icon: '✊', isZen: true, method: 'startSuitGame' },
-    { id: 'word_scramble', name: 'Susun Kata', icon: '🔤', isZen: true, method: 'startWordScrambleGame' },
-    { id: 'tower_defense', name: 'Benteng TD', icon: '🏹', isZen: true, method: 'startTowerDefenseGame' },
-    { id: 'sudoku', name: 'Sudoku Mini', icon: '🔢', isZen: true, method: 'startSudokuGame' },
-    { id: 'rhythm', name: 'Rhythm Master', icon: '🎵', isZen: true, method: 'startRhythmGame' },
-    { id: 'hole', name: 'Hole.io Lite', icon: '🕳️', isZen: true, method: 'startHoleGame' },
-    { id: 'liquid_sort', name: 'Liquid Sort', icon: '🧪', isZen: true, method: 'startLiquidSortGame' },
-    { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀', isZen: true, method: 'startLunarLanderGame' },
-    { id: 'piano', name: 'Piano Hero', icon: '🎹', isZen: true, method: 'startPianoGame' },
-    { id: 'math_quest', name: 'Math Quest', icon: '🛡️', isZen: true, method: 'startMathQuest' },
-    { id: 'math_story', name: 'Math Story', icon: '📚', isZen: true, method: 'startMathStory' },
-    { id: 'gravity', name: 'Gravity Flip', icon: '🌌', isZen: true, method: 'startGravityGame' },
-    { id: 'light_reflector', name: 'Laser Mirror', icon: '🔦', isZen: true, method: 'startLightReflector' },
-    { id: 'word', name: 'Word Search', icon: '🗺️', isZen: true, method: 'startWordSearchGame' },
-    { id: 'pong', name: 'Pong Remake', icon: '🎾', isZen: true, method: 'startPongGame' },
-    { id: 'go', name: 'Go Game', icon: '⚪', isZen: true, method: 'startGoGame' }, 
-    { id: 'othello', name: 'Othello', icon: '🌗', isZen: true, method: 'startOthello' },
-    { id: 'light_sout', name: 'Lights Out', icon: '💡', isZen: true, method: 'startLightSout' },
-    { id: 'sokoban', name: 'Sokoban', icon: '📦', isZen: true, method: 'startSokoban' },
-    { id: 'tower_builder', name: 'Tower Stack', icon: '🏢', isZen: true, method: 'startTowerGame' },
+    // --- KATEGORI: ASAH OTAK ---
+    { id: 'typing', name: 'Ketik Cepat', icon: '⌨️', category: 'Asah Otak', isZen: false, method: 'startTypingGame' },
+    { id: 'memory', name: 'Memo-Droid', icon: '🧠', category: 'Asah Otak', isZen: false, method: 'startMemoryGame' },
+    { id: 'code', name: 'Tebak Kode', icon: '🔐', category: 'Asah Otak', isZen: true, method: 'startCodeGame' },
+    { id: 'simon', name: 'Simon Says', icon: '🧠', category: 'Asah Otak', isZen: true, method: 'startSimonGame' },
+    { id: 'word_scramble', name: 'Susun Kata', icon: '🔤', category: 'Asah Otak', isZen: true, method: 'startWordScrambleGame' },
+    { id: 'sudoku', name: 'Sudoku Mini', icon: '🔢', category: 'Asah Otak', isZen: true, method: 'startSudokuGame' },
+    { id: 'word', name: 'Word Search', icon: '🗺️', category: 'Asah Otak', isZen: true, method: 'startWordSearchGame' },
+    { id: 'iq_test', name: 'Tes Logika', icon: '🧠', category: 'Asah Otak', isZen: true, method: 'startIQTest' },
+    { id: 'kraepelin', name: 'Tes Kraepelin', icon: '📊', category: 'Asah Otak', isZen: true, method: 'startKraepelin' },
+    { id: 'minesweeper', name: 'Ranjau Darat', icon: '💣', category: 'Asah Otak', isZen: true, method: 'startMinesweeperGame' },
+    { id: 'light_sout', name: 'Lights Out', icon: '💡', category: 'Asah Otak', isZen: true, method: 'startLightSout' },
+    { id: 'sokoban', name: 'Sokoban', icon: '📦', category: 'Asah Otak', isZen: true, method: 'startSokoban' },
+
+    // --- KATEGORI: ARCADE ---
+    { id: 'snake', name: 'Snake Klasik', icon: '🐍', category: 'Arcade', isZen: true, method: 'startSnakeGame' },
+    { id: 'bug', name: 'Catch Bug', icon: '🦟', category: 'Arcade', isZen: false, method: 'startBugGame' },
+    { id: 'whac', name: 'Whack-a-Mole', icon: '🔨', category: 'Arcade', isZen: false, method: 'startWhacGame' },
+    { id: 'dino', name: 'Dino Jump', icon: '🌵', category: 'Arcade', isZen: true, method: 'startDinoGame' },
+    { id: 'color', name: 'Color Match', icon: '🌈', category: 'Arcade', isZen: false, method: 'startColorGame' },
+    { id: 'flappy', name: 'Flappy Box', icon: '🐦', category: 'Arcade', isZen: true, method: 'startFlappyGame' },
+    { id: 'stack', name: 'Tower Stack', icon: '🏗️', category: 'Arcade', isZen: false, method: 'startStackGame' },
+    { id: 'bricks', name: 'Brick Breaker', icon: '🧱', category: 'Arcade', isZen: true, method: 'startBricksGame' },
+    { id: 'tetris', name: 'Tetris Classic', icon: '🕹️', category: 'Arcade', isZen: true, method: 'startTetrisGame' },
+    { id: 'racer', name: 'Traffic Racer', icon: '🏎️', category: 'Arcade', isZen: true, method: 'startRacerGame' },
+    { id: 'knife', name: 'Knife Hit', icon: '🔪', category: 'Arcade', isZen: true, method: 'startKnifeGame' },
+    { id: 'miner', name: 'Gold Miner', icon: '⛏️', category: 'Arcade', isZen: true, method: 'startMinerGame' },
+    { id: 'tower_defense', name: 'Benteng TD', icon: '🏹', category: 'Arcade', isZen: true, method: 'startTowerDefenseGame' },
+    { id: 'rhythm', name: 'Rhythm Master', icon: '🎵', category: 'Arcade', isZen: true, method: 'startRhythmGame' },
+    { id: 'hole', name: 'Hole.io Lite', icon: '🕳️', category: 'Arcade', isZen: true, method: 'startHoleGame' },
+    { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀', category: 'Arcade', isZen: true, method: 'startLunarLanderGame' },
+    { id: 'gravity', name: 'Gravity Flip', icon: '🌌', category: 'Arcade', isZen: true, method: 'startGravityGame' },
+    { id: 'tower_builder', name: 'Tower Stack', icon: '🏢', category: 'Arcade', isZen: true, method: 'startTowerGame' },
+
+    // --- KATEGORI: MATEMATIKA ---
+    { id: 'math', name: 'Math Rush', icon: '➕', category: 'Matematika', isZen: false, method: 'startMathGame' },
+    { id: 'math_sub', name: 'Kurang-Kurangan', icon: '➖', category: 'Matematika', isZen: false, method: 'startSubtractionGame' },
+    { id: 'math_mul', name: 'Kali-Kalian', icon: '✖️', category: 'Matematika', isZen: false, method: 'startMultiplicationGame' },
+    { id: 'math_div', name: 'Bagi-Bagian', icon: '➗', category: 'Matematika', isZen: false, method: 'startDivisionGame' },
+    { id: 'math_quest', name: 'Math Quest', icon: '🛡️', category: 'Matematika', isZen: true, method: 'startMathQuest' },
+    { id: 'math_story', name: 'Math Story', icon: '📚', category: 'Matematika', isZen: true, method: 'startMathStory' },
+    { id: '2048', name: '2048 Lite', icon: '🔢', category: 'Matematika', isZen: false, method: 'start2048Game' },
+
+    // --- KATEGORI: BOARD GAME ---
+    { id: 'tictactoe', name: 'Tic-Tac-Toe', icon: '⭕', category: 'Board Game', isZen: false, method: 'startTictactoeGame' },
+    { id: 'ular_tangga', name: 'Ular Tangga', icon: '🎲', category: 'Board Game', isZen: true, method: 'startUlarTanggaGame' },
+    { id: 'suit', name: 'Suit Jepang', icon: '✊', category: 'Board Game', isZen: true, method: 'startSuitGame' },
+    { id: 'go', name: 'Go Game', icon: '⚪', category: 'Board Game', isZen: true, method: 'startGoGame' }, 
+    { id: 'othello', name: 'Othello', icon: '🌗', category: 'Board Game', isZen: true, method: 'startOthello' },
+
+    // --- KATEGORI: CASUAL ---
+    { id: 'tebak_koin', name: 'Tebak Koin', icon: '🪙', category: 'Casual', isZen: true, method: 'startTebakKoinGame' },
+    { id: 'drawing', name: 'Menggambar', icon: '🎨', category: 'Casual', isZen: true, method: 'startDrawingGame' },
+    { id: 'jigsaw', name: 'Jigsaw', icon: '🧩', category: 'Casual', isZen: true, method: 'startJigsawGame' },
+    { id: 'liquid_sort', name: 'Liquid Sort', icon: '🧪', category: 'Casual', isZen: true, method: 'startLiquidSortGame' },
+    { id: 'piano', name: 'Piano Hero', icon: '🎹', category: 'Casual', isZen: true, method: 'startPianoGame' },
+    { id: 'light_reflector', name: 'Laser Mirror', icon: '🔦', category: 'Casual', isZen: true, method: 'startLightReflector' },
+    { id: 'pong', name: 'Pong Remake', icon: '🎾', category: 'Casual', isZen: true, method: 'startPongGame' },
 ];
+
 
 let timeLeft = 60;
 let timerInterval;
@@ -269,17 +281,36 @@ async function showLeaderboard(gameId) {
 /**
  * Inisialisasi Menu Utama
  */
+/**
+ * Inisialisasi Menu Utama - Diurutkan berdasarkan Abjad Kategori
+ */
 function initMenu() {
     initTheme();
     checkUser();
     const grid = document.getElementById('menu-grid');
     if (!grid) return;
-    grid.innerHTML = games.map(g => `
-        <div class="game-card" onclick="launchGame('${g.id}')">
-            <div class="icon">${g.icon}</div>
-            <h3>${g.name}</h3>
-        </div>
-    `).join('');
+
+    // Ambil semua kategori unik dari array games, lalu urutkan A-Z
+    const categories = [...new Set(games.map(g => g.category))].sort();
+
+    grid.innerHTML = categories.map(cat => {
+        const categoryGames = games.filter(g => g.category === cat);
+        if (categoryGames.length === 0) return '';
+
+        return `
+            <div class="category-wrapper">
+                <h2>${cat}</h2>
+                <div class="game-grid">
+                    ${categoryGames.map(g => `
+                        <div class="game-card" onclick="launchGame('${g.id}')">
+                            <div class="icon">${g.icon}</div>
+                            <h3>${g.name}</h3>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 /**
