@@ -47,6 +47,7 @@ const games = [
     { id: 'lunar_lander', name: 'Lunar Lander', icon: '🚀', category: 'Arcade', isZen: true, method: 'startLunarLanderGame' },
     { id: 'gravity', name: 'Gravity Flip', icon: '🌌', category: 'Arcade', isZen: true, method: 'startGravityGame' },
     { id: 'tower_builder', name: 'Tower Stack', icon: '🏢', category: 'Arcade', isZen: true, method: 'startTowerGame' },
+    { id: 'tank', name: 'Classic Tank', icon: '🚜', category: 'Arcade', isZen: true, method: 'startTankGame' },
 
     // --- KATEGORI: MATEMATIKA ---
     { id: 'math', name: 'Math Rush', icon: '➕', category: 'Matematika', isZen: false, method: 'startMathGame' },
